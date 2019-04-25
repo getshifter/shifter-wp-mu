@@ -151,4 +151,48 @@ class Shifter_Admin {
 		}
 	}
 
+	/**
+	 * Redis Cache Fix
+	 *
+	 * @since    1.0.0
+	 */
+	public function option_cache_flush($option, $old_value = '', $value = '') {
+		if ( !empty( $option ) ) {
+				wp_cache_delete( $option, 'options' );
+				foreach (array('alloptions','notoptions') as $options_name) {
+						$options = wp_cache_get( $options_name, 'options' );
+						if ( ! is_array($options) ) {
+								$options = array();
+						}
+						if ( isset($options[$option]) ) {
+								unset($options[$option]);
+								wp_cache_set( $options_name, $options, 'options' );
+						}
+						unset($options);
+				}
+		}
+		return;
+}
+
+
+	/**
+	 * Shifter Heartbeat
+	 *
+	 * @since    1.0.0
+	 */
+		public function shifter_heartbert_on_sitepreview_writeScript() {
+			if (is_user_logged_in()) {
+		?>
+		<script>
+		function shifter_heartbert_getajax() {
+			var xhr= new XMLHttpRequest();
+			xhr.open("GET","/wp-admin/admin-ajax.php?action=nopriv_heartbeat");
+			xhr.send();
+		}
+		setInterval("shifter_heartbert_getajax()", 30000);
+		</script>
+		<?php
+			}
+		}
+
 }

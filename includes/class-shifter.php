@@ -156,8 +156,20 @@ class Shifter {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		
+		/** Dashboad Timer */
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'notice_shifter_dashboard_timer' );
+		
+		/** Yoast Sitemaps */
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'yoast_sitemaps_fix' );
+
+		/** Redis Cache Fix */
+		$this->loader->add_action( 'add_option',    $plugin_admin, 'option_cache_flush' );
+		$this->loader->add_action( 'update_option', $plugin_admin, 'option_cache_flush' );
+		$this->loader->add_action( 'delete_option', $plugin_admin, 'option_cache_flush' );
+
+		/** Shifter Heartbeat */
+		$this->loader->add_action( 'wp_footer', $plugin_admin, 'shifter_heartbert_on_sitepreview_writeScript', 999 );
 
 	}
 
