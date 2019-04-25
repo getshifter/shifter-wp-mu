@@ -174,6 +174,10 @@ class Shifter {
 		/** Shifter Mail From Helper */
 		$this->loader->add_filter( 'wp_mail_from', $plugin_admin, 'shifter_mail_from' );
 
+		/** Shifter Algolia Intergrations */
+		$this->loader->add_filter( 'algolia_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
+		$this->loader->add_filter( 'algolia_searchable_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10 ,2);
+
 	}
 
 	/**

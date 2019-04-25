@@ -205,4 +205,27 @@ class Shifter_Admin {
 			return 'wordpress@app.getshifter.io';
 		}
 
+	/**
+	 * Integrations between Shifter and Algolia
+	 *
+	 * @since    1.0.0
+	 */
+		public function shifter_replace_algolia_permalink(  $shared_attributes, $post  ){
+			$replaced_domain = getenv( 'SHIFTER_DOMAIN' );
+			if ( ! $replaced_domain ) {
+				$replaced_domain =getenv( 'CF_DOMAIN' );
+			}
+			if ( $replaced_domain ) {
+				$url = $shared_attributes['permalink'];
+				$parsed_url = parse_url( $url );
+				$replace_target = $parsed_url['host'];
+				if ( isset( $parsed_url['port'] ) && $parsed_url['port'] ) {
+					$replace_target .= ":{$parsed_url['port']}";
+				}
+				$shared_attributes['permalink'] = preg_replace( "#{$replace_target}#i", $replaced_domain, $url );
+			}
+			return $shared_attributes;
+		}
+			
+
 }
