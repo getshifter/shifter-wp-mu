@@ -195,4 +195,14 @@ class Shifter_Admin {
 			}
 		}
 
+
+	/**
+	 * Shifter Mail From Helper
+	 *
+	 * @since    1.0.0
+	 */
+		public function shifter_mail_from( $email_address ) {
+			return 'wordpress@app.getshifter.io';
+		}
+
 }
