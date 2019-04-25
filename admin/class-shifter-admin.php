@@ -126,4 +126,29 @@ class Shifter_Admin {
 	}}
 	}
 
+	/**
+	 * Fix for Yoast Sitemaps
+	 *
+	 * @since    1.0.0
+	 */
+	public function yoast_sitemaps_fix() {
+		if ( ! function_exists( 'surbma_yoast_seo_sitemap_to_robotstxt_init' ) ) {
+			add_filter(
+				'robots_txt',
+				function( $output ) {
+					$options = get_option( 'wpseo_xml' );
+
+					if ( class_exists( 'WPSEO_Sitemaps' ) && true === $options['enablexmlsitemap'] ) {
+						$home_url = get_home_url();
+						$output  .= "Sitemap: {$home_url}/sitemap_index.xml\n";
+					}
+
+					return $output;
+				},
+				9999,
+				1
+			);
+		}
+	}
+
 }

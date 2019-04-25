@@ -157,6 +157,7 @@ class Shifter {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'notice_shifter_dashboard_timer' );
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'yoast_sitemaps_fix' );
 
 	}
 
