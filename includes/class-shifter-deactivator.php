@@ -23,6 +23,7 @@
 class Shifter_Deactivator {
 
 
+
 	/**
 	 * Short Description. (use period)
 	 *

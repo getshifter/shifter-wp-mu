@@ -22,6 +22,7 @@
 class Shifter_Admin {
 
 
+
 	/**
 	 * The ID of this plugin.
 	 *
@@ -161,7 +162,7 @@ class Shifter_Admin {
 		if ( ! empty( $option ) ) {
 			wp_cache_delete( $option, 'options' );
 			foreach ( array( 'alloptions', 'notoptions' ) as $options_name ) {
-				 $options = wp_cache_get( $options_name, 'options' );
+				$options = wp_cache_get( $options_name, 'options' );
 				if ( ! is_array( $options ) ) {
 					$options = array();
 				}
@@ -169,7 +170,7 @@ class Shifter_Admin {
 					unset( $options[ $option ] );
 					wp_cache_set( $options_name, $options, 'options' );
 				}
-				 unset( $options );
+				unset( $options );
 			}
 		}
 		return;
@@ -228,5 +229,119 @@ class Shifter_Admin {
 		return $shared_attributes;
 	}
 
+	/**
+	 * Shifter Icon
+	 *
+	 * @since 1.0.0
+	 */
+	public function shifter_icon() {
+		return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH4QUQCAwVRk5ANwAAAeFJREFUOMu9lEFIVEEYx38zs7LiQSja7BAaHcIoaqGDslFIyEadYusU0cki6yAaBV0FD8kSBGlLeVEwIcgkKMukDmEYLLXtJamI7dihQ0Qs+t73psM+t0V9vidI32mGmfl98/2/+Y/Cj9nMSN6IHIiJgxEHI+6ftplrW9hgxGrGFqgLWIscmk2OWqDajGS1ZS0A5RpwGeBDR7824hITB+05Xut8llLystKeKCNuRW/XVUpZ2fZlogKczYzQOdl1LiBpCYgD9aAO+vMe4Ea1Mq0KWDkO2BhA52QXr07dw3jSqj25YMTJp6Z7J/wDiQoMwC7L0ABs93lvEp/H06t0OjZ1EavUDNAHPHiXzu6PINnXHQujR3/sPR8ofKL6hpRKhMB+WaP3ATR9GgsAWo4Aj4Du9hdXX68D+yi6fuvO4v2l9bpMx5NLeeAMwNsTt0hN961J21UYflpKXtnYww6C/YMO/R+nRPHruO/xOuB32OaVdmPu5G2lrBf3fxyMuN6yU4y4uuoOcW1zMbcY5YaNvg3jIRf5BhyKAiz7TmgMqe5hpKYcftazhGUwBOY1F3M3I3c59bx3AMvjtVkWqzgN8D3ZHQ04n87S9vJ6BjgLzAGLFn4COWDP7vd3pgBaCndXnf0LIlef9HGSOIAAAAAASUVORK5CYII=';
+	}
+
+	/**
+	 * Shifter Admin Bar Toggle
+	 *
+	 * @since 1.0.0
+	 */
+	public function shifter_admin_bar() {
+
+		global $wp_admin_bar;
+
+		$shifter_top_menu = '
+			<span class="ab-icon">
+				<img src="' . $this->shifter_icon() . '" alt="Shifter Icon" />
+			</span>
+			<span class="ab-label">Shifter</span>';
+
+		$wp_admin_bar->add_menu(
+			array(
+				'id'    => 'shifter',
+				'title' => $shifter_top_menu,
+				'href'  => admin_url() . 'admin.php?page=shifter',
+			)
+		);
+	}
+
+	/**
+	 * Shifter Admin Page
+	 *
+	 * @since 1.0.0
+	 */
+
+	public function shifter_mu_admin() {
+		echo "<div class='wrap'>";
+		echo '<h1>' . __( 'Shifter', 'shifter-mu-admin' ) . '</h1>';
+		echo "<div class='card'>
+			 <h2 class='title'>Generator Settings</h2>
+			 <span>Customize your static site generator settings for faster build times.</span>
+			 <p class='submit'><a class='button button-primary' href='admin.php?page=shifter-settings'>Generator Settings</a></p>
+		 </div>";
+		echo "<div class='card'>
+			 <h2 class='title'>Docs & Support</h2>
+			 <span>Need help with something or have a question? Check out our documentation or contact support for more help.</span>
+			 <p class='submit'><a target='_blank' rel='noopener noreferrer' class='button button-primary' href='https://support.getshifter.io'>Docs & Support</a></p>
+		 </div>";
+		echo "<div class='card'>
+		 <h2 class='title'>Shifter Blog</h2>
+		 <span>Learn about WordPress, static site generators, case studies and features sites, upcoming WordCamp events, and the latest news from Shifter.</span>
+		 <p class='submit'><a class='button button-primary' target='_blank' rel='noopener noreferrer' href='https://www.getshifter.io/blog'>Shifter Blog</a></p>
+	 </div>";
+		echo '</div>';
+	}
+
+	/**
+	 * Shifter Settings Page
+	 *
+	 * @since 1.0.0
+	 */
+
+	public function shifter_mu_admin_page() {
+		add_menu_page(
+			__( 'Shifter', 'shifter' ),
+			__( 'Shifter', 'shifter' ),
+			'manage_options',
+			'shifter',
+			__NAMESPACE__ . '\\shifter_mu_admin',
+			$this->shifter_icon()
+		);
+	}
+
+	/**
+	 * Shifter Admin Bar
+	 *
+	 * @since 1.0.0
+	 */
+	public function shifter_admin_bar_items() {
+		global $wp_admin_bar;
+
+		$shifter_support_back_to_shifter_dashboard = array(
+			'id'     => 'shifter_support_back_to_shifter_dashboard',
+			'title'  => "Shifter Dashboard <span style='font-family: dashicons; position: relative; top:-2px' class='dashicons dashicons-external'></span>",
+			'parent' => 'shifter',
+			'href'   => '#',
+			'meta'   => array(
+				'target' => '_blank',
+				'rel'    => 'nofollow noopener noreferrer',
+			),
+		);
+
+		$shifter_support_terminate = array(
+			'id'     => 'shifter_support_terminate',
+			'title'  => 'Terminate App',
+			'parent' => 'shifter',
+			'href'   => '#',
+		);
+
+		$shifter_support_generate = array(
+			'id'     => 'shifter_support_generate',
+			'title'  => 'Generate Artifact',
+			'parent' => 'shifter',
+			'href'   => '#',
+		);
+
+		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
+		$wp_admin_bar->add_menu( $shifter_support_generate );
+		$wp_admin_bar->add_menu( $shifter_support_terminate );
+	}
 
 }

@@ -23,6 +23,7 @@
 class Shifter_Public {
 
 
+
 	/**
 	 * The ID of this plugin.
 	 *

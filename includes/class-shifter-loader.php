@@ -24,6 +24,7 @@
 class Shifter_Loader {
 
 
+
 	/**
 	 * The array of actions registered with WordPress.
 	 *

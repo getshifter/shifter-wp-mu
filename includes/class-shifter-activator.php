@@ -23,6 +23,7 @@
 class Shifter_Activator {
 
 
+
 	/**
 	 * Short Description. (use period)
 	 *
