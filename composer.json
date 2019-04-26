@@ -13,6 +13,9 @@
     ],
     "post-update-cmd": [
       "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
+    ],
+    "cs-fix": [
+      "phpcbf . -p --ignore=vendor,node_modules --extensions=php"
     ]
   },
   "authors": [
