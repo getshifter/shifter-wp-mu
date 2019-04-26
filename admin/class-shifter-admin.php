@@ -23,6 +23,7 @@ class Shifter_Admin {
 
 
 
+
 	/**
 	 * The ID of this plugin.
 	 *
