@@ -1,0 +1,24 @@
+{
+  "name": "digitalcube/shifter",
+  "type": "wordpress-plugin",
+  "description": "",
+  "require": {
+    "wp-coding-standards/wpcs": "^2.0",
+    "squizlabs/php_codesniffer": "^3.4",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
+    ],
+    "post-update-cmd": [
+      "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Daniel Olson",
+      "email": "emaildano@gmail.com"
+    }
+  ]
+}
