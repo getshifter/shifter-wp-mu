@@ -15,7 +15,10 @@
       "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
     ],
     "cs-fix": [
-      "phpcbf . -p --ignore=vendor,node_modules --extensions=php"
+      "phpcbf . -pw --ignore=vendor,node_modules --extensions=php"
+    ],
+    "cs-lint": [
+      "phpcs . -p --ignore=vendor,node_modules --extensions=php"
     ]
   },
   "authors": [

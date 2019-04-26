@@ -20,19 +20,18 @@
  * @subpackage Shifter/includes
  * @author     DigitalCube <hello@getshifter.io>
  */
-class Shifter_Deactivator
-{
+class Shifter_Deactivator {
 
-    /**
-     * Short Description. (use period)
-     *
-     * Long Description.
-     *
-     * @since 1.0.0
-     */
-    public static function deactivate()
-    {
 
-    }
+	/**
+	 * Short Description. (use period)
+	 *
+	 * Long Description.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function deactivate() {
+
+	}
 
 }

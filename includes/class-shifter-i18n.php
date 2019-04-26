@@ -24,25 +24,24 @@
  * @subpackage Shifter/includes
  * @author     DigitalCube <hello@getshifter.io>
  */
-class Shifter_i18n
-{
+class Shifter_i18n {
 
 
-    /**
-     * Load the plugin text domain for translation.
-     *
-     * @since 1.0.0
-     */
-    public function load_plugin_textdomain()
-    {
 
-        load_plugin_textdomain(
-            'shifter',
-            false,
-            dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
-        );
+	/**
+	 * Load the plugin text domain for translation.
+	 *
+	 * @since 1.0.0
+	 */
+	public function load_plugin_textdomain() {
 
-    }
+		load_plugin_textdomain(
+			'shifter',
+			false,
+			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+		);
+
+	}
 
 
 
