@@ -160,52 +160,34 @@ class Shifter {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		/**
-		 * Dashboad Timer
-		 */
+		// Dashboard Timer.
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'notice_shifter_dashboard_timer' );
 
-		/**
-		  * Yoast Sitemaps
-		 */
+		// Yoast Sitemaps.
 		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'yoast_sitemaps_fix' );
 
-		/**
-		  * Redis Cache Fix
-*/
+		// Redis Cache Fix.
 		$this->loader->add_action( 'add_option', $plugin_admin, 'option_cache_flush' );
 		$this->loader->add_action( 'update_option', $plugin_admin, 'option_cache_flush' );
 		$this->loader->add_action( 'delete_option', $plugin_admin, 'option_cache_flush' );
 
-		/**
-		  * Shifter Heartbeat
-*/
+		// Shifter Heartbeat.
 		$this->loader->add_action( 'wp_footer', $plugin_admin, 'shifter_heartbert_on_sitepreview_writeScript', 999 );
 
-		/**
-		  * Shifter Mail From Helper
-*/
+		// Shifter Mail From Helper.
 		$this->loader->add_filter( 'wp_mail_from', $plugin_admin, 'shifter_mail_from' );
 
-		/**
-		  * Shifter Algolia Intergrations
-*/
+		// Shifter Algolia Intergrations.
 		$this->loader->add_filter( 'algolia_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
 		$this->loader->add_filter( 'algolia_searchable_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
 
-		/**
-	* Shifter Admin Bar Items
-*/
+		// Shifter Admin Bar Items.
 		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'shifter_admin_bar_items' );
 
-		/**
-	* Shifter Admin Bar
-*/
+		// Shifter Admin Bar.
 		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'shifter_admin_bar' );
 
-		/**
-	* Shifter Admin Page
-*/
+		// Shifter Admin Page.
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'shifter_mu_admin_page' );
 	}
 

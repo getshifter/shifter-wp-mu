@@ -21,9 +21,6 @@
  */
 class Shifter_Admin {
 
-
-
-
 	/**
 	 * The ID of this plugin.
 	 *
@@ -298,11 +295,14 @@ class Shifter_Admin {
 
 	public function shifter_mu_admin_page() {
 		add_menu_page(
-			__( 'Shifter', 'shifter' ),
-			__( 'Shifter', 'shifter' ),
+			'Shifter',
+			'Shifter',
 			'manage_options',
 			'shifter',
-			__NAMESPACE__ . '\\shifter_mu_admin',
+			array(
+				$this,
+				'shifter_mu_admin',
+			),
 			$this->shifter_icon()
 		);
 	}
