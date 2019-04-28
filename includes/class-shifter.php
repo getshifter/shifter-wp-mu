@@ -190,6 +190,7 @@ class Shifter {
 		// Shifter Admin Page.
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'shifter_mu_admin_page' );
 
+		// Hide upgrade notice.
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'hide_update_notice', 1 );
 	}
 

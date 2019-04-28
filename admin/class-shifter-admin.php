@@ -348,7 +348,7 @@ class Shifter_Admin {
 	 *
 	 * @since  1.0.3
 	 */
-	function hide_update_notice() {
+	public function hide_update_notice() {
 		remove_action( 'admin_notices', 'update_nag', 3 );
 	}
 
