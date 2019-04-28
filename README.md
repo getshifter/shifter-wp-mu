@@ -1,0 +1,9 @@
+shifter-wp-controller
+shifter-wp-sitemaps
+shifter-wp-api
+shifter-mu
+shifter-eva
+shifter-wp-tips
+shifter-artifact-helper
+shifter-dashboard-timer
+shifter-heartbeat-on-sitepreview

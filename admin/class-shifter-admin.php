@@ -291,7 +291,6 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-
 	public function shifter_mu_admin_page() {
 		add_menu_page(
 			'Shifter',
@@ -342,6 +341,15 @@ class Shifter_Admin {
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
 		$wp_admin_bar->add_menu( $shifter_support_generate );
 		$wp_admin_bar->add_menu( $shifter_support_terminate );
+	}
+
+	/**
+	 * Hide upgrade notice
+	 *
+	 * @since  1.0.3
+	 */
+	function hide_update_notice() {
+		remove_action( 'admin_notices', 'update_nag', 3 );
 	}
 
 }
