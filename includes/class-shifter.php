@@ -192,6 +192,9 @@ class Shifter {
 
 		// Hide upgrade notice.
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'hide_update_notice', 1 );
+
+		// Remove Core Update.
+		$this->loader->add_filter( 'pre_site_transient_update_core', $plugin_admin, 'remove_core_updates' );
 	}
 
 	/**

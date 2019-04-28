@@ -352,4 +352,18 @@ class Shifter_Admin {
 		remove_action( 'admin_notices', 'update_nag', 3 );
 	}
 
+	/**
+	 * Remove Core Update
+	 *
+	 * @since  1.0.4
+	 */
+	public function remove_core_updates() {
+		global $wp_version;
+		return (object) array(
+			'last_checked'    => time(),
+			'version_checked' => $wp_version,
+			'updates'         => array(),
+		);
+	}
+
 }
