@@ -265,7 +265,6 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-
 	public function shifter_mu_admin() {
 		echo "<div class='wrap'>";
 		echo '<h1>' . __( 'Shifter', 'shifter-mu-admin' ) . '</h1>';
