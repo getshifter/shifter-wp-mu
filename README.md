@@ -2,9 +2,9 @@
 
 | Plugin                           |      Migrated      |
 | -------------------------------- | :----------------: |
-| shifter-wp-controller            |                    |
+| shifter-wp-controller            | :white_check_mark: |
 | shifter-wp-sitemaps              | :white_check_mark: |
-| shifter-wp-api                   |                    |
+| shifter-wp-api                   | :white_check_mark: |
 | shifter-mu                       | :white_check_mark: |
 | shifter-eva                      |                    |
 | shifter-wp-tips                  |                    |
