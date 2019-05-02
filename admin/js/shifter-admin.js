@@ -62,7 +62,36 @@
     });
   }
 
+  function terminate_app() {
+    swal({
+      title: "Are you sure?",
+      text: "Confirm to power down your Shifter app.",
+      padding: "3em",
+      showCancelButton: true,
+      confirmButtonColor: "transparent",
+      cancelButtonColor: "#333",
+      confirmButtonText: "Terminate"
+    }).then(result => {
+      if (result.value) {
+        call_shifter_operation("shifter_app_terminate");
+        swal(
+          "App Terminated",
+          "Check Shifter Dashboard for status or to resetart.",
+          "success"
+        ).then(() => window.close());
+      }
+    });
+  }
+
   $(document).on("click", "#wp-admin-bar-shifter_support_generate", function() {
     generate_artifact();
   });
+
+  $(document).on(
+    "click",
+    "#wp-admin-bar-shifter_support_terminate",
+    function() {
+      terminate_app();
+    }
+  );
 })(jQuery);
