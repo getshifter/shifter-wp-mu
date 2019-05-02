@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       Shifter
  * Plugin URI:        https://github.com/getshifter/shifter-mu
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Helper functions for WordPress sites on Shifter.
  * Version:           1.0.0
  * Author:            DigitalCube
  * Author URI:        https://www.getshifter.io
