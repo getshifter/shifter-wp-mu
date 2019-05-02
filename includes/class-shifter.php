@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -28,9 +27,6 @@
  * @author     DigitalCube <hello@getshifter.io>
  */
 class Shifter {
-
-
-
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -81,6 +77,7 @@ class Shifter {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_api_hooks();
 
 	}
 
@@ -124,6 +121,12 @@ class Shifter {
 		 * side of the site.
 		 */
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shifter-public.php';
+
+		/**
+		 * The class responsible for defining all actions that occur in the api-facing
+		 * side of the site.
+		 */
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/class-shifter-api.php';
 
 		$this->loader = new Shifter_Loader();
 
@@ -195,6 +198,12 @@ class Shifter {
 
 		// Remove Core Update.
 		$this->loader->add_filter( 'pre_site_transient_update_core', $plugin_admin, 'remove_core_updates' );
+
+		// Terminate Container Request.
+		$this->loader->add_action( 'wp_ajax_shifter_app_terminate', $plugin_admin, 'shifter_app_terminate' );
+
+		// Generate Artifact Request.
+		$this->loader->add_action( 'wp_ajax_shifter_app_generate', $plugin_admin, 'shifter_app_generate' );
 	}
 
 	/**
@@ -211,6 +220,17 @@ class Shifter {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+	}
+
+		/**
+		 * Register all of the hooks related to the api-facing functionality
+		 * of the plugin.
+		 *
+		 * @since  1.0.0
+		 * @access private
+		 */
+	private function define_api_hooks() {
+		$plugin_api = new Shifter_API( $this->get_plugin_name(), $this->get_version() );
 	}
 
 	/**

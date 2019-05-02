@@ -9,3 +9,12 @@
     position: static;
   }
 }
+
+.swal2-actions button {
+  border-radius: 100px !important;
+}
+
+.swal2-confirm {
+  background: linear-gradient(90deg, rgb(188, 78, 156), rgb(248, 7, 89))
+    rgb(188, 78, 156) !important;
+}
