@@ -316,13 +316,14 @@ class Shifter_Admin {
 	 */
 	public function shifter_admin_bar_items() {
 		$local_class = getenv( 'SHIFTER_LOCAL' ) ? 'disable_shifter_operation' : '';
+		$api = new Shifter_API;
 		global $wp_admin_bar;
 
 		$shifter_support_back_to_shifter_dashboard = array(
 			'id'     => 'shifter_support_back_to_shifter_dashboard',
 			'title'  => "Shifter Dashboard <span style='font-family: dashicons; position: relative; top:-2px' class='dashicons dashicons-external'></span>",
 			'parent' => 'shifter',
-			'href'   => 'https://google.com',
+			'href'   => $api->shifter_dashboard_url,
 			'meta'   => array(
 				'target' => '_blank',
 				'rel'    => 'nofollow noopener noreferrer',
