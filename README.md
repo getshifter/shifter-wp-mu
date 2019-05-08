@@ -11,3 +11,6 @@
 | shifter-artifact-helper          |                    |
 | shifter-dashboard-timer          | :white_check_mark: |
 | shifter-heartbeat-on-sitepreview | :white_check_mark: |
+| wp-integration-for-algolia       | :white_check_mark: |
+| shifter-redis-cache-fix          | :white_check_mark: |
+| shifter-mail-from-helper         | :white_check_mark: |
