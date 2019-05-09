@@ -64,18 +64,6 @@ class Shifter_Public {
 	 */
 	public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Shifter_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Shifter_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/shifter-public.css', array(), $this->version, 'all' );
 
 	}
@@ -87,20 +75,33 @@ class Shifter_Public {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Shifter_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Shifter_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-public.js', array( 'jquery' ), $this->version, false );
 
+	}
+
+	/**
+	 * Fix for Yoast Sitemaps
+	 *
+	 * @since 1.0.0
+	 */
+	public function yoast_sitemaps_fix() {
+		if ( ! function_exists( 'surbma_yoast_seo_sitemap_to_robotstxt_init' ) ) {
+			add_filter(
+				'robots_txt',
+				function ( $output ) {
+					$options = get_option( 'wpseo_xml' );
+
+					if ( class_exists( 'WPSEO_Sitemaps' ) && true === $options['enablexmlsitemap'] ) {
+						$home_url = get_home_url();
+						$output  .= "Sitemap: {$home_url}/sitemap_index.xml\n";
+					}
+
+					return $output;
+				},
+				9999,
+				1
+			);
+		}
 	}
 
 }

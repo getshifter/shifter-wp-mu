@@ -52,58 +52,6 @@ class Shifter_Admin {
 	}
 
 	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since 1.0.0
-	 */
-	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Shifter_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Shifter_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/shifter-admin.css', array(), $this->version, 'all' );
-
-		wp_register_style( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.css' );
-		wp_enqueue_style( 'sweetalert2' );
-	}
-
-	/**
-	 * Register the JavaScript for the admin area.
-	 *
-	 * @since 1.0.0
-	 */
-	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Shifter_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Shifter_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-admin.js', array( 'jquery' ), $this->version, false );
-
-		wp_register_script( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.js', null, null, true );
-		wp_localize_script( 'sweetalert2', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
-		wp_enqueue_script( 'sweetalert2' );
-
-	}
-
-	/**
 	 * Display Container Time
 	 *
 	 * @since 1.0.0
@@ -127,31 +75,6 @@ class Shifter_Admin {
 	</ul></div>
 				<?php
 			}
-		}
-	}
-
-	/**
-	 * Fix for Yoast Sitemaps
-	 *
-	 * @since 1.0.0
-	 */
-	public function yoast_sitemaps_fix() {
-		if ( ! function_exists( 'surbma_yoast_seo_sitemap_to_robotstxt_init' ) ) {
-			add_filter(
-				'robots_txt',
-				function ( $output ) {
-					$options = get_option( 'wpseo_xml' );
-
-					if ( class_exists( 'WPSEO_Sitemaps' ) && true === $options['enablexmlsitemap'] ) {
-						$home_url = get_home_url();
-						$output  .= "Sitemap: {$home_url}/sitemap_index.xml\n";
-					}
-
-					return $output;
-				},
-				9999,
-				1
-			);
 		}
 	}
 
@@ -241,30 +164,6 @@ class Shifter_Admin {
 	}
 
 	/**
-	 * Shifter Admin Bar Toggle
-	 *
-	 * @since 1.0.0
-	 */
-	public function shifter_admin_bar() {
-
-		global $wp_admin_bar;
-
-		$shifter_top_menu = '
-			<span class="ab-icon">
-				<img src="' . $this->shifter_icon() . '" alt="Shifter Icon" />
-			</span>
-			<span class="ab-label">Shifter</span>';
-
-		$wp_admin_bar->add_menu(
-			array(
-				'id'    => 'shifter',
-				'title' => $shifter_top_menu,
-				'href'  => admin_url() . 'admin.php?page=shifter',
-			)
-		);
-	}
-
-	/**
 	 * Shifter Admin Page
 	 *
 	 * @since 1.0.0
@@ -310,48 +209,6 @@ class Shifter_Admin {
 	}
 
 	/**
-	 * Shifter Admin Bar
-	 *
-	 * @since 1.0.0
-	 */
-	public function shifter_admin_bar_items() {
-		$local_class = getenv( 'SHIFTER_LOCAL' ) ? 'disable_shifter_operation' : '';
-		$api = new Shifter_API;
-		global $wp_admin_bar;
-
-		$shifter_support_back_to_shifter_dashboard = array(
-			'id'     => 'shifter_support_back_to_shifter_dashboard',
-			'title'  => "Shifter Dashboard <span style='font-family: dashicons; position: relative; top:-2px' class='dashicons dashicons-external'></span>",
-			'parent' => 'shifter',
-			'href'   => $api->shifter_dashboard_url,
-			'meta'   => array(
-				'target' => '_blank',
-				'rel'    => 'nofollow noopener noreferrer',
-			),
-		);
-
-		$shifter_support_terminate = array(
-			'id'     => 'shifter_support_terminate',
-			'title'  => 'Terminate App',
-			'parent' => 'shifter',
-			'href'   => '#',
-			'meta'   => array( 'class' => $local_class ),
-		);
-
-		$shifter_support_generate = array(
-			'id'     => 'shifter_support_generate',
-			'title'  => 'Generate Artifact',
-			'parent' => 'shifter',
-			'href'   => '#',
-			'meta'   => array( 'class' => $local_class ),
-		);
-
-		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
-		$wp_admin_bar->add_menu( $shifter_support_generate );
-		$wp_admin_bar->add_menu( $shifter_support_terminate );
-	}
-
-	/**
 	 * Hide upgrade notice
 	 *
 	 * @since  1.0.3
@@ -372,17 +229,6 @@ class Shifter_Admin {
 			'version_checked' => $wp_version,
 			'updates'         => array(),
 		);
-	}
-
-
-	public function shifter_app_terminate() {
-		$api = new Shifter_API();
-		return $api->terminate_wp_app();
-	}
-
-	public function shifter_app_generate() {
-		$api = new Shifter_API();
-		return $api->generate_wp_app();
 	}
 
 }

@@ -75,6 +75,7 @@ class Shifter {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_global_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->define_api_hooks();
@@ -128,6 +129,11 @@ class Shifter {
 		 */
 		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/class-shifter-api.php';
 
+		/**
+			 * The class responsible for defining all actions that occur globally.
+			 */
+		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'global/class-shifter-global.php';
+
 		$this->loader = new Shifter_Loader();
 
 	}
@@ -160,14 +166,8 @@ class Shifter {
 
 		$plugin_admin = new Shifter_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
 		// Dashboard Timer.
 		$this->loader->add_action( 'admin_notices', $plugin_admin, 'notice_shifter_dashboard_timer' );
-
-		// Yoast Sitemaps.
-		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'yoast_sitemaps_fix' );
 
 		// Redis Cache Fix.
 		$this->loader->add_action( 'add_option', $plugin_admin, 'option_cache_flush' );
@@ -183,12 +183,6 @@ class Shifter {
 		// Shifter Algolia Intergrations.
 		$this->loader->add_filter( 'algolia_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
 		$this->loader->add_filter( 'algolia_searchable_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
-
-		// Shifter Admin Bar Items.
-		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'shifter_admin_bar_items' );
-
-		// Shifter Admin Bar.
-		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_admin, 'shifter_admin_bar' );
 
 		// Shifter Admin Page.
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'shifter_mu_admin_page' );
@@ -206,6 +200,31 @@ class Shifter {
 		$this->loader->add_action( 'wp_ajax_shifter_app_generate', $plugin_admin, 'shifter_app_generate' );
 	}
 
+		/**
+		 * Register all of the hooks related to global functionality
+		 * of the plugin.
+		 *
+		 * @since  1.0.0
+		 * @access private
+		 */
+	private function define_global_hooks() {
+
+		$plugin_global = new Shifter_Global( $this->get_plugin_name(), $this->get_version() );
+
+		// Global Scripts and Styles.
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_global, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_global, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_global, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_global, 'enqueue_scripts' );
+
+		// Shifter Admin Bar Items.
+		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_global, 'shifter_admin_bar_items' );
+
+		// Shifter Admin Bar.
+		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_global, 'shifter_admin_bar' );
+
+	}
+
 	/**
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
@@ -214,12 +233,10 @@ class Shifter {
 	 * @access private
 	 */
 	private function define_public_hooks() {
-
 		$plugin_public = new Shifter_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		// Yoast Sitemaps.
+		$this->loader->add_action( 'plugins_loaded', $plugin_public, 'yoast_sitemaps_fix' );
 	}
 
 		/**
