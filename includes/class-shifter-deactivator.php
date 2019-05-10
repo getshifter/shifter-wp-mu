@@ -15,7 +15,7 @@
  *
  * This class defines all code necessary to run during the plugin's deactivation.
  *
- * @since      1.0.0
+ * @since      1.0
  * @package    Shifter
  * @subpackage Shifter/includes
  * @author     DigitalCube <hello@getshifter.io>

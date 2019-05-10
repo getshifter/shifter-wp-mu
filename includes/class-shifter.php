@@ -239,15 +239,26 @@ class Shifter {
 		$this->loader->add_action( 'plugins_loaded', $plugin_public, 'yoast_sitemaps_fix' );
 	}
 
-		/**
-		 * Register all of the hooks related to the api-facing functionality
-		 * of the plugin.
-		 *
-		 * @since  1.0.0
-		 * @access private
-		 */
+	/**
+	 * Register all of the hooks related to the api-facing functionality
+	 * of the plugin.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 */
 	private function define_api_hooks() {
-		$plugin_api = new Shifter_API( $this->get_plugin_name(), $this->get_version() );
+		$plugin_api = new Shifter_API();
+	}
+
+	/**
+	 * Register all of the hooks related to the cli-facing functionality
+	 * of the plugin.
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 */
+	private function define_cli_hooks() {
+		$plugin_cli = new Shifter_CLI();
 	}
 
 	/**

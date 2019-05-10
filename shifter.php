@@ -8,14 +8,14 @@
  * that starts the plugin.
  *
  * @link    https://www.getshifter.io
- * @since   1.0.0
+ * @since   1.0
  * @package Shifter
  *
  * @wordpress-plugin
  * Plugin Name:       Shifter
  * Plugin URI:        https://github.com/getshifter/shifter-mu
  * Description:       Helper functions for WordPress sites on Shifter.
- * Version:           1.0.0
+ * Version:           1.0
  * Author:            DigitalCube
  * Author URI:        https://www.getshifter.io
  * License:           GPL-2.0+
@@ -31,10 +31,10 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Start at version 1.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'SHIFTER_VERSION', '1.0.0' );
+define( 'SHIFTER_VERSION', '1.0' );
 
 /**
  * The code that runs during plugin activation.

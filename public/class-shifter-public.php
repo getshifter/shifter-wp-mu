@@ -28,7 +28,7 @@ class Shifter_Public {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0
 	 * @access private
 	 * @var    string    $plugin_name    The ID of this plugin.
 	 */
@@ -37,7 +37,7 @@ class Shifter_Public {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0
 	 * @access private
 	 * @var    string    $version    The current version of this plugin.
 	 */

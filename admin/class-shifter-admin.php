@@ -24,7 +24,7 @@ class Shifter_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0
 	 * @access private
 	 * @var    string    $plugin_name    The ID of this plugin.
 	 */
@@ -33,7 +33,7 @@ class Shifter_Admin {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0
 	 * @access private
 	 * @var    string    $version    The current version of this plugin.
 	 */
@@ -46,7 +46,7 @@ class Shifter_Admin {
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name = null, $version = null ) {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 	}
@@ -228,6 +228,29 @@ class Shifter_Admin {
 			'last_checked'    => time(),
 			'version_checked' => $wp_version,
 			'updates'         => array(),
+		);
+	}
+
+	public function deactivate_plugin_conflicts() {
+
+		deactivate_plugins(
+			array(
+				'autoptimize/autoptimize.php',
+				'cache-enabler/cache-enabler.php',
+				'comet-cache/comet-cache.php',
+				'force-strong-passwords/slt-force-strong-passwords.php',
+				'head-cleaner/head-cleaner.php',
+				'hyper-cache/plugin.php',
+				'litespeed-cache/litespeed-cache.php',
+				'simple-cache/simple-cache.php',
+				'siteguard/siteguard.php',
+				'siteguard/siteguard.php',
+				'sns-count-cache/sns-count-cache.php',
+				'w3-total-cache/w3-total-cache.php',
+				'wp-fastest-cache/wpFastestCache.php',
+				'wp-remote-manager-client/plugin.php',
+				'wp-super-cache/wp-cache.php',
+			)
 		);
 	}
 

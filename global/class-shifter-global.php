@@ -24,7 +24,7 @@ class Shifter_Global {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0
 	 * @access private
 	 * @var    string    $plugin_name    The ID of this plugin.
 	 */
@@ -33,7 +33,7 @@ class Shifter_Global {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0
 	 * @access private
 	 * @var    string    $version    The current version of this plugin.
 	 */
@@ -92,7 +92,7 @@ class Shifter_Global {
 		/**
 		 * Send Terminate Request
 		 *
-		 * @since  1.0.0
+		 * @since  1.0
 		 * @return string    The version number of the plugin.
 		 */
 	public function shifter_app_terminate() {
@@ -103,7 +103,7 @@ class Shifter_Global {
 		/**
 		 * Send Generator Request
 		 *
-		 * @since  1.0.0
+		 * @since  1.0
 		 * @return string    The version number of the plugin.
 		 */
 	public function shifter_app_generate() {

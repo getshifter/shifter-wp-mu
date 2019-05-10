@@ -15,15 +15,12 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
+ * @since      1.0
  * @package    Shifter
  * @subpackage Shifter/includes
  * @author     DigitalCube <hello@getshifter.io>
  */
 class Shifter_Activator {
-
-
-
 
 	/**
 	 * Short Description. (use period)
@@ -33,7 +30,8 @@ class Shifter_Activator {
 	 * @since 1.0.0
 	 */
 	public static function activate() {
-
+		$plugin_admin = new Shifter_Admin();
+		$plugin_admin->deactivate_plugin_conflicts();
 	}
 
 }
