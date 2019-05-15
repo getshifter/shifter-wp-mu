@@ -1,30 +1,25 @@
 ---
-version: 2.1
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.3-cli
 
-orbs:
-  php_lint:
-    jobs:
-      composer_install:
-        executor: php_cli
-        steps:
-          - composer_install:
-              name: composer_install
-    commands:
-      composer_install:
-        steps:
-          - run: composer install
-    executors:
-      php_cli:
-        parameters:
-          image_tag:
-            type: string
-            default: "7.3.5-cli"
-        docker:
-          - image: circleci/php:<<parameters.image_tag>>
+    working_directory: ~/shifter-wp-mu
 
+    steps:
+      - checkout
+
+      - run:
+          command: composer install
+      - run: |
+          sudo -u root createuser -h localhost --superuser ubuntu &&
+          sudo createdb -h localhost test_db
+      - run: |
+          env
 
 workflows:
-  build-test-deploy:
+  version: 2
+  build-deploy:
     jobs:
-      - php_lint/composer_install:
-          name: composer_install
+      - build
