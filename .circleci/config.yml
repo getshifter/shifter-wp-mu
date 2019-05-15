@@ -22,14 +22,43 @@ jobs:
           command: composer cs-fix
       - run:
           command: composer cs-lint
+
+  release:
+    docker:
+      - image: circleci/golang:latest
+    working_directory: ~/shifter-wp-mu
+    steps:
+      - checkout
+      - run: go get -u github.com/tcnksm/ghr
       - run:
-          command: make pkg
+          name: tag release
+          command: |
+            if [ "${CIRCLE_TAG-NONE}" != "NONE" ]; then
+              make pkg
+              ghr -v
+              ghr -replace ${CIRCLE_TAG} pkg/
+            else
+              # create basename archive
+              tar -cvzf pkg/shifter-wp-mu.${CIRCLE_BRANCH##*/}.tgz -T files
+              echo skipped
+            fi
       - store_artifacts:
           path: ~/shifter-wp-mu/pkg
           destination: pkg
 
 workflows:
   version: 2
-  build-deploy:
+  build-and-release:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - release:
+          requires:
+            - build
+          filters:
+          #   branches:
+          #     only: master
+            tags:
+              only: /.*/
