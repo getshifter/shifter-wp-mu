@@ -9,11 +9,21 @@ jobs:
 
     steps:
       - checkout
-
+      - restore_cache:
+          keys:
+            - vendor-cache-{{ checksum "composer.lock" }}
       - run:
           command: composer install
+      - save_cache:
+          key: vendor-cache-{{ checksum "composer.lock" }}
+          paths:
+            - ~/shifter-wp-mu/vendor
       - run: |
           env
+      - run:
+          command: composer cs-fix
+      - run:
+          command: composer cs-lint
 
 workflows:
   version: 2
