@@ -13,9 +13,6 @@ jobs:
       - run:
           command: composer install
       - run: |
-          sudo -u root createuser -h localhost --superuser ubuntu &&
-          sudo createdb -h localhost test_db
-      - run: |
           env
 
 workflows:
