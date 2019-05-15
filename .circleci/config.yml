@@ -1,15 +1,30 @@
-# Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
+---
 version: 2.1
 
-# Use a package of configuration called an orb, see https://circleci.com/docs/2.0/orb-intro/
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.3.1
-
-# Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
-workflows:
-  # Name the workflow "Welcome"
-  Welcome:
-    # Run the welcome/run job in its own container
+  php_lint:
     jobs:
-      - welcome/run
+      composer_install:
+        executor: php_cli
+        steps:
+          - composer_install:
+              name: composer_install
+    commands:
+      composer_install:
+        steps:
+          - run: composer install
+    executors:
+      php_cli:
+        parameters:
+          image_tag:
+            type: string
+            default: "7.3.5-cli"
+        docker:
+          - image: circleci/php:<<parameters.image_tag>>
+
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - php_lint/composer_install:
+          name: composer_install
