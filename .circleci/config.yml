@@ -18,12 +18,15 @@ jobs:
           key: vendor-cache-{{ checksum "composer.lock" }}
           paths:
             - ~/shifter-wp-mu/vendor
-      - run: |
-          env
       - run:
           command: composer cs-fix
       - run:
           command: composer cs-lint
+      - run:
+          command: make pkg
+      - store_artifacts:
+          path: ~/shifter-wp-mu/pkg
+          destination: pkg
 
 workflows:
   version: 2
