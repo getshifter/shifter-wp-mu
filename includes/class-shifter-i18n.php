@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -24,7 +23,7 @@
  * @subpackage Shifter/includes
  * @author     DigitalCube <hello@getshifter.io>
  */
-class Shifter_i18n {
+class Shifter_I18n {
 
 
 

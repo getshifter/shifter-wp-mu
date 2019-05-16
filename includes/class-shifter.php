@@ -88,7 +88,7 @@ class Shifter {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Shifter_Loader. Orchestrates the hooks of the plugin.
-	 * - Shifter_i18n. Defines internationalization functionality.
+	 * - Shifter_I18n. Defines internationalization functionality.
 	 * - Shifter_Admin. Defines all hooks for the admin area.
 	 * - Shifter_Public. Defines all hooks for the public side of the site.
 	 *
@@ -141,7 +141,7 @@ class Shifter {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Shifter_i18n class in order to set the domain and to register the hook
+	 * Uses the Shifter_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since  1.0.0
@@ -149,7 +149,7 @@ class Shifter {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Shifter_i18n();
+		$plugin_i18n = new Shifter_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
