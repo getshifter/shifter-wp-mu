@@ -175,7 +175,7 @@ class Shifter {
 		$this->loader->add_action( 'delete_option', $plugin_admin, 'option_cache_flush' );
 
 		// Shifter Heartbeat.
-		$this->loader->add_action( 'wp_footer', $plugin_admin, 'shifter_heartbert_on_sitepreview_writeScript', 999 );
+		$this->loader->add_action( 'wp_footer', $plugin_admin, 'shifter_heartbert_on_sitepreview_write_script', 999 );
 
 		// Shifter Mail From Helper.
 		$this->loader->add_filter( 'wp_mail_from', $plugin_admin, 'shifter_mail_from' );

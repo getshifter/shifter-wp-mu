@@ -71,7 +71,7 @@ class Shifter_Admin {
 			} elseif ( $shifter_remain < 30 ) {
 				?>
 	<div class="error"><ul>
-	Notice: Shifter will power down WordPress in <?php echo $shifter_remain; ?> minutes. Please restart your from the Shifter Dashboard.
+	Notice: Shifter will power down WordPress in <?php echo esc_html( $shifter_remain ); ?> minutes. Please restart your from the Shifter Dashboard.
 	</ul></div>
 				<?php
 			}
@@ -82,6 +82,9 @@ class Shifter_Admin {
 	 * Redis Cache Fix
 	 *
 	 * @since 1.0.0
+	 * @param    string $option Redis Option.
+	 * @param    string $old_value Old Value.
+	 * @param    string $value Value.
 	 */
 	public function option_cache_flush( $option, $old_value = '', $value = '' ) {
 		if ( ! empty( $option ) ) {
@@ -98,7 +101,6 @@ class Shifter_Admin {
 				unset( $options );
 			}
 		}
-		return;
 	}
 
 
@@ -107,7 +109,7 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function shifter_heartbert_on_sitepreview_writeScript() {
+	public function shifter_heartbert_on_sitepreview_write_script() {
 		if ( is_user_logged_in() ) {
 			?>
 		<script>
