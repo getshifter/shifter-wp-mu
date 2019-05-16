@@ -3,4 +3,8 @@
 README.md export-ignore
 vendor export-ignore
 composer.json export-ignore
-composer-lock.json export-ignore
+composer.lock export-ignore
+Makefile export-ignore
+files export-ignore
+.circleci export-ignore
+
