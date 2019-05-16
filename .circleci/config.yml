@@ -39,6 +39,7 @@ jobs:
               ghr -replace ${CIRCLE_TAG} pkg/
             else
               # create basename archive
+              mkdir pkg
               tar -cvzf pkg/shifter-wp-mu.${CIRCLE_BRANCH##*/}.tgz -T files
               echo skipped
             fi
