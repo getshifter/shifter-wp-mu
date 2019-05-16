@@ -129,6 +129,7 @@ class Shifter_Admin {
 	 * Shifter Mail From Helper
 	 *
 	 * @since 1.0.0
+	 * @param string $email_address Email address.
 	 */
 	public function shifter_mail_from( $email_address ) {
 		return 'wordpress@app.getshifter.io';
@@ -136,6 +137,9 @@ class Shifter_Admin {
 
 	/**
 	 * Integrations between Shifter and Algolia
+	 *
+	 * @param string $shared_attributes Shared attrs.
+	 * @param string $post Post.
 	 *
 	 * @since 1.0.0
 	 */
@@ -146,7 +150,7 @@ class Shifter_Admin {
 		}
 		if ( $replaced_domain ) {
 			$url            = $shared_attributes['permalink'];
-			$parsed_url     = parse_url( $url );
+			$parsed_url     = wp_parse_url( $url );
 			$replace_target = $parsed_url['host'];
 			if ( isset( $parsed_url['port'] ) && $parsed_url['port'] ) {
 				$replace_target .= ":{$parsed_url['port']}";
