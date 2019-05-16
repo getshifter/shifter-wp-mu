@@ -50,7 +50,7 @@ function activate_shifter() {
  * This action is documented in includes/class-shifter-deactivator.php
  */
 function deactivate_shifter() {
-	 include_once plugin_dir_path( __FILE__ ) . 'includes/class-shifter-deactivator.php';
+	include_once plugin_dir_path( __FILE__ ) . 'includes/class-shifter-deactivator.php';
 	Shifter_Deactivator::deactivate();
 }
 

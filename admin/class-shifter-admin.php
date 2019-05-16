@@ -176,7 +176,7 @@ class Shifter_Admin {
 	 */
 	public function shifter_mu_admin() {
 		echo "<div class='wrap'>";
-		echo '<h1>' . __( 'Shifter', 'shifter-mu-admin' ) . '</h1>';
+		echo '<h1>' . esc_html__( 'Shifter', 'shifter-mu-admin' ) . '</h1>';
 		echo "<div class='card'>
 			 <h2 class='title'>Generator Settings</h2>
 			 <span>Customize your static site generator settings for faster build times.</span>

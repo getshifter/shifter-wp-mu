@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The api-facing functionality of the plugin.
  *
@@ -22,14 +21,60 @@
  */
 class Shifter_API {
 
-	// start.
-	private $site_id       = '';
-	private $generate_url  = '';
+
+	/**
+	 * Site ID
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $site_id    Site ID
+	 */
+	private $site_id = '';
+
+	/**
+	 * Generate URL
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $generate_url    Generate URL
+	 */
+	private $generate_url = '';
+
+		/**
+		 * Terminate URL
+		 *
+		 * @since  1.0.0
+		 * @access private
+		 * @var    string    $terminate_url    Terminate URL
+		 */
 	private $terminate_url = '';
-	private $access_token  = '';
+
+			/**
+			 * Access Token
+			 *
+			 * @since  1.0.0
+			 * @access private
+			 * @var    string    $access_token    Access Token
+			 */
+	private $access_token = '';
+
+			/**
+			 * Refresh Token
+			 *
+			 * @since  1.0.0
+			 * @access private
+			 * @var    string    $refresh_token    Refresh Token
+			 */
 	private $refresh_token = '';
+
+				/**
+				 * Refresh Token Date
+				 *
+				 * @since  1.0.0
+				 * @access private
+				 * @var    string    $token_update_date    Refresh Token Date
+				 */
 	private static $token_update_date;
-	// stop.
 
 	/**
 	 * Initialize the class and set its properties.
@@ -56,11 +101,11 @@ class Shifter_API {
 		// stop.
 	}
 
-		/**
-		 * Terminate App
-		 *
-		 * @since 1.0.0
-		 */
+	/**
+	 * Terminate App
+	 *
+	 * @since 1.0.0
+	 */
 	public function terminate_wp_app() {
 		if ( $this->access_token_is_expired() ) {
 			$this->refresh_token();
@@ -68,11 +113,11 @@ class Shifter_API {
 		wp_remote_request( $this->terminate_url, $this->build_args() );
 	}
 
-			/**
-			 * Start Generator
-			 *
-			 * @since 1.0.0
-			 */
+	/**
+	 * Start Generator
+	 *
+	 * @since 1.0.0
+	 */
 	public function generate_wp_app() {
 		if ( $this->access_token_is_expired() ) {
 			$this->refresh_token();
@@ -103,17 +148,19 @@ class Shifter_API {
 	 * @since 1.0.0
 	 */
 	private function refresh_token() {
-		$headers            = array( 'content-type' => 'application/json' );
-		$args               = array(
+		$headers    = array( 'content-type' => 'application/json' );
+		$args       = array(
 			'method'  => 'PUT',
 			'headers' => $headers,
-			'body'    => json_encode( array( 'refreshToken' => $this->refresh_token ) ),
+			'body'    => wp_json_encode( array( 'refreshToken' => $this->refresh_token ) ),
 		);
-		$response           = wp_remote_request( $this->refresh_url, $args );
-		$body               = $response[ body ];
-		$body_array         = json_decode( $body );
+		$response   = wp_remote_request( $this->refresh_url, $args );
+		$body       = $response[ body ];
+		$body_array = json_decode( $body );
+		// phpcs:disable
 		$this->access_token = $body_array->AccessToken;
 		putenv( "SHIFTER_ACCESS_TOKEN=$this->access_token" );
+		// phpcs:enable
 	}
 
 	/**
