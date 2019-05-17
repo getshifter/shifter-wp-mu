@@ -192,12 +192,6 @@ class Shifter {
 
 		// Remove Core Update.
 		$this->loader->add_filter( 'pre_site_transient_update_core', $plugin_admin, 'remove_core_updates' );
-
-		// Terminate Container Request.
-		$this->loader->add_action( 'wp_ajax_shifter_app_terminate', $plugin_admin, 'shifter_app_terminate' );
-
-		// Generate Artifact Request.
-		$this->loader->add_action( 'wp_ajax_shifter_app_generate', $plugin_admin, 'shifter_app_generate' );
 	}
 
 		/**
@@ -222,6 +216,12 @@ class Shifter {
 
 		// Shifter Admin Bar.
 		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_global, 'shifter_admin_bar' );
+
+		// Generate Artifact Request.
+		$this->loader->add_action( 'wp_ajax_shifter_app_generate', $plugin_global, 'shifter_app_generate' );
+
+		// Terminate Container Request.
+		$this->loader->add_action( 'wp_ajax_shifter_app_terminate', $plugin_global, 'shifter_app_terminate' );
 
 	}
 
