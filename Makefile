@@ -7,7 +7,7 @@ DIRS := \
 	public
 
 FILES := \
-	README.txt \
+	README.md \
 	LICENSE.txt
 
 list:
