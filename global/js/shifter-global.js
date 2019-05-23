@@ -76,7 +76,7 @@
         call_shifter_operation("shifter_app_terminate");
         swal(
           "App Terminated",
-          "Check Shifter Dashboard for status or to resetart.",
+          "Check the Shifter Dashboard for status or to restart.",
           "success"
         ).then(() => window.close());
       }
