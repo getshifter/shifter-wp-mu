@@ -73,6 +73,7 @@ class Shifter_Global {
 			wp_register_style( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.css', array(), '7.26.11' );
 			wp_enqueue_style( 'sweetalert2' );
 		}
+
 	}
 
 	/**
