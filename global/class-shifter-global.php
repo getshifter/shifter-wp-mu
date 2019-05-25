@@ -67,6 +67,7 @@ class Shifter_Global {
 	 */
 	public function enqueue_styles() {
 
+		// Only load assets when generator is running.
 		if ( is_user_logged_in() ) {
 			wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/shifter-global.css', array(), $this->version, 'all' );
 			wp_register_style( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.css', array(), '7.26.11' );
@@ -81,6 +82,7 @@ class Shifter_Global {
 	 */
 	public function enqueue_scripts() {
 
+		// Only load assets when generator is running.
 		if ( is_user_logged_in() ) {
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-global.js', array( 'jquery' ), $this->version, false );
 			wp_register_script( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.js', array(), '7.26.11', true );
