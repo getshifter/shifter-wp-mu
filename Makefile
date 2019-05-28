@@ -19,6 +19,6 @@ pkg: clean
 	tar -cvzf pkg/shifter-wp-mu.tgz -T files
 
 clean:
-	rm -f pkg/shifter-artifact-helper.tgz
+	rm -f pkg/shifter-wp-mu.tgz
 
 .PHONY: list pkg clean
