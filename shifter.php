@@ -15,7 +15,7 @@
  * Plugin Name:       Shifter
  * Plugin URI:        https://github.com/getshifter/shifter-wp-mu
  * Description:       Helper functions for WordPress sites on Shifter.
- * Version:           1.0.7
+ * Version:           1.0.8
  * Author:            DigitalCube
  * Author URI:        https://www.getshifter.io
  * License:           GPL-2.0+
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'SHIFTER_VERSION', '1.0.7' );
+define( 'SHIFTER_VERSION', '1.0.8' );
 
 /**
  * The code that runs during plugin activation.
@@ -79,3 +79,26 @@ function run_shifter() {
 }
 
 run_shifter();
+
+
+// Temp filters before core update.
+
+/**
+ * Force remove controle characters from filename
+ *
+ * @link  https://www.getshifter.io
+ * @since 1.0.8
+ *
+ * @package    Shifter
+ * @subpackage Shifter/filters
+ * core_ticket: https://core.trac.wordpress.org/ticket/47539
+ */
+
+add_filter(
+	'sanitize_file_name',
+	function( $filename, $filename_raw ) {
+		return preg_replace( '/[\x00-\x1F]/', '', $filename );
+	},
+	10,
+	2
+);
