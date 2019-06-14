@@ -91,6 +91,7 @@ run_shifter();
  *
  * @package    Shifter
  * @subpackage Shifter/filters
+ * core_ticket: https://core.trac.wordpress.org/ticket/47539
  */
 
 add_filter( 'sanitize_file_name', function( $filename, $filename_raw ) {
