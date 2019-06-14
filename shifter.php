@@ -94,6 +94,11 @@ run_shifter();
  * core_ticket: https://core.trac.wordpress.org/ticket/47539
  */
 
-add_filter( 'sanitize_file_name', function( $filename, $filename_raw ) {
-	return preg_replace( '/[\x00-\x1F]/', '', $filename );
-}, 10, 2);
+add_filter(
+	'sanitize_file_name',
+	function( $filename, $filename_raw ) {
+		return preg_replace( '/[\x00-\x1F]/', '', $filename );
+	},
+	10,
+	2
+);

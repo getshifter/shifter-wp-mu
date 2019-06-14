@@ -15,7 +15,7 @@
       "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
     ],
     "cs-fix": [
-      "phpcbf . -pw --ignore=vendor,node_modules --extensions=php --standard=WordPress"
+      "phpcbf . -pwv --ignore=vendor,node_modules --extensions=php --standard=WordPress || git diff"
     ],
     "cs-lint": [
       "phpcs . -p --ignore=vendor,node_modules --extensions=php --standard=WordPress"
