@@ -84,7 +84,7 @@ run_shifter();
 // Temp filters before core update.
 
 /**
- * Force remove controle characters from filename
+ * Force remove control characters from filename
  *
  * @link  https://www.getshifter.io
  * @since 1.0.8
