@@ -65,13 +65,13 @@ class Shifter_Admin {
 			if ( $shifter_remain < 3 ) {
 				?>
 	<div class="error"><ul>
-	Notice: Shifter will power down WordPress in few minutes. Please restart your from the Shifter Dashboard.
+	Notice: Shifter will power down WordPress in a few minutes. Please restart WordPress from the Shifter Dashboard.
 	</ul></div>
 				<?php
 			} elseif ( $shifter_remain < 30 ) {
 				?>
 	<div class="error"><ul>
-	Notice: Shifter will power down WordPress in <?php echo esc_html( $shifter_remain ); ?> minutes. Please restart your from the Shifter Dashboard.
+	Notice: Shifter will power down WordPress in <?php echo esc_html( $shifter_remain ); ?> minutes. Please restart WordPress from the Shifter Dashboard.
 	</ul></div>
 				<?php
 			}
