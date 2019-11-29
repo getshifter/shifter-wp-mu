@@ -139,7 +139,7 @@ class Shifter_Global {
 
 		$shifter_support_terminate = array(
 			'id'     => 'shifter_support_terminate',
-			'title'  => 'Terminate App',
+			'title'  => 'Stop WordPress',
 			'parent' => 'shifter',
 			'href'   => '#',
 			'meta'   => array( 'class' => $local_class ),

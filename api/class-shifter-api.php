@@ -102,7 +102,7 @@ class Shifter_API {
 	}
 
 	/**
-	 * Terminate App
+	 * Stop WordPress
 	 *
 	 * @since 1.0.0
 	 */
