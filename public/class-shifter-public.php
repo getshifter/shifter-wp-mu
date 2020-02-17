@@ -88,9 +88,9 @@ class Shifter_Public {
 			add_filter(
 				'robots_txt',
 				function ( $output ) {
-					$options = get_option( 'wpseo_xml' );
+					$options = get_option( 'wpseo' );
 
-					if ( class_exists( 'WPSEO_Sitemaps' ) && true === $options['enablexmlsitemap'] ) {
+					if ( class_exists( 'WPSEO_Sitemaps' ) && true === $options['enable_xml_sitemap'] ) {
 						$home_url = get_home_url();
 						$output  .= "Sitemap: {$home_url}/sitemap_index.xml\n";
 					}
