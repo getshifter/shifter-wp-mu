@@ -154,7 +154,9 @@ class Shifter_Global {
 		);
 
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
-		$wp_admin_bar->add_menu( $shifter_support_generate );
+		if (!getenv( 'SHIFTER_DISABLE_GENERATE' )) {
+			$wp_admin_bar->add_menu( $shifter_support_generate );
+		}
 		$wp_admin_bar->add_menu( $shifter_support_terminate );
 	}
 
