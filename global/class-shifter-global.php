@@ -124,7 +124,6 @@ class Shifter_Global {
 	public function shifter_admin_bar_items() {
 		$local_class = getenv( 'SHIFTER_LOCAL' ) ? 'disable_shifter_operation' : '';
 		$api         = new Shifter_API();
-		$role        = getenv('SHIFTER_USER_ROLE');
 		global $wp_admin_bar;
 
 		$shifter_support_back_to_shifter_dashboard = array(
@@ -155,7 +154,7 @@ class Shifter_Global {
 		);
 
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
-		if ($role != 'editor') {
+		if (!getenv( 'SHIFTER_DISABLE_GENERATE' )) {
 			$wp_admin_bar->add_menu( $shifter_support_generate );
 		}
 		$wp_admin_bar->add_menu( $shifter_support_terminate );
