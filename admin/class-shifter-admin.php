@@ -115,7 +115,7 @@ class Shifter_Admin {
 		<script>
 		function shifter_heartbert_getajax() {
 			var xhr= new XMLHttpRequest();
-			xhr.open("GET","<?php echo(add_query_arg('action','nopriv_heartbeat',site_url('/wp-admin/admin-ajax.php')));?>");
+			xhr.open("GET","<?php echo esc_url(add_query_arg('action','nopriv_heartbeat',site_url('/wp-admin/admin-ajax.php')));?>");
 			xhr.send();
 		}
 		var shifterHB = setInterval("shifter_heartbert_getajax()", 30000);
