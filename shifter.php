@@ -8,7 +8,7 @@
  * that starts the plugin.
  *
  * @link    https://www.getshifter.io
- * @since   1.0.0
+ * @since   1.1.0
  * @package Shifter
  *
  * @wordpress-plugin
