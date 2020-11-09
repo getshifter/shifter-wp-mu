@@ -137,12 +137,14 @@ class Shifter_Admin {
 	}
 
 	/**
-	 * @param string $url URL strings
+	 * Integrations between Shifter and Algolia Shared private function
+	 *
+	 * @param string $url URL strings.
 	 * @return string Replaced URL from Shifter WP to Shifter CDN
 	 *
 	 * @since 1.1.0
 	 */
-	private function _replace_url_to_public_domain( $url ) {
+	private function replace_url_to_public_domain( $url ) {
 		$replaced_domain = getenv( 'SHIFTER_DOMAIN' );
 		if ( ! $replaced_domain ) {
 			$replaced_domain = getenv( 'CF_DOMAIN' );
@@ -166,7 +168,7 @@ class Shifter_Admin {
 	 * @since 1.0.0
 	 */
 	public function replace_algolia_posts_permalink( $record ) {
-		$record['permalink'] = $this->_replace_url_to_public_domain( $record['permalink'] );
+		$record['permalink'] = $this->replace_url_to_public_domain( $record['permalink'] );
 		return $record;
 	}
 	/**
@@ -177,7 +179,7 @@ class Shifter_Admin {
 	 * @since 1.1.0
 	 */
 	public function replace_algolia_terms_permalink( $record ) {
-		$record['permalink'] = $this->_replace_url_to_public_domain( $record['permalink'] );
+		$record['permalink'] = $this->replace_url_to_public_domain( $record['permalink'] );
 		return $record;
 	}
 
@@ -189,7 +191,7 @@ class Shifter_Admin {
 	 * @since 1.1.0
 	 */
 	public function replace_algolia_users_posts_url( $record ) {
-		$record['posts_url'] = $this->_replace_url_to_public_domain( $record['posts_url'] );
+		$record['posts_url'] = $this->replace_url_to_public_domain( $record['posts_url'] );
 		return $record;
 	}
 

@@ -18,7 +18,7 @@
       "phpcbf . -pwv --ignore=vendor,node_modules,volume --extensions=php --standard=WordPress || git diff"
     ],
     "cs-lint": [
-      "phpcs . -p --ignore=vendor,node_modules --extensions=php --standard=WordPress"
+      "phpcs . -p --ignore=vendor,node_modules,volume --extensions=php --standard=WordPress"
     ]
   },
   "authors": [
