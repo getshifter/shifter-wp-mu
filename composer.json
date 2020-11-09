@@ -3,9 +3,9 @@
   "type": "wordpress-plugin",
   "description": "",
   "require": {
-    "wp-coding-standards/wpcs": "^2.0",
-    "squizlabs/php_codesniffer": "^3.4",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
+    "wp-coding-standards/wpcs": "*",
+    "squizlabs/php_codesniffer": "*",
+    "dealerdirect/phpcodesniffer-composer-installer": "*"
   },
   "scripts": {
     "post-install-cmd": [
@@ -15,10 +15,10 @@
       "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
     ],
     "cs-fix": [
-      "phpcbf . -pwv --ignore=vendor,node_modules --extensions=php --standard=WordPress || git diff"
+      "phpcbf . -pwv --ignore=vendor,node_modules,volume --extensions=php --standard=WordPress || git diff"
     ],
     "cs-lint": [
-      "phpcs . -p --ignore=vendor,node_modules --extensions=php --standard=WordPress"
+      "phpcs . -p --ignore=vendor,node_modules,volume --extensions=php --standard=WordPress"
     ]
   },
   "authors": [

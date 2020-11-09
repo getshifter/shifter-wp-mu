@@ -182,8 +182,10 @@ class Shifter {
 		$this->loader->add_filter( 'wp_mail_from', $plugin_admin, 'shifter_mail_from' );
 
 		// Shifter Algolia Intergrations.
-		$this->loader->add_filter( 'algolia_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
-		$this->loader->add_filter( 'algolia_searchable_post_shared_attributes', $plugin_admin, 'shifter_replace_algolia_permalink', 10, 2 );
+		$this->loader->add_filter( 'algolia_post_shared_attributes', $plugin_admin, 'replace_algolia_posts_permalink', 10, 1 );
+		$this->loader->add_filter( 'algolia_searchable_post_shared_attributes', $plugin_admin, 'replace_algolia_posts_permalink', 10, 1 );
+		$this->loader->add_filter( 'algolia_term_record', $plugin_admin, 'replace_algolia_terms_permalink', 10, 1 );
+		$this->loader->add_filter( 'algolia_user_record', $plugin_admin, 'replace_algolia_users_posts_url', 10, 1 );
 
 		// Shifter Admin Page.
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'shifter_mu_admin_page' );
