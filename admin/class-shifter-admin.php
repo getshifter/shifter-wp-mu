@@ -142,7 +142,7 @@ class Shifter_Admin {
 	 * @param string $url URL strings.
 	 * @return string Replaced URL from Shifter WP to Shifter CDN
 	 *
-	 * @since 1.1.0
+	 * @since 1.1.1
 	 */
 	private function replace_url_to_public_domain( $url ) {
 		$replaced_domain = getenv( 'SHIFTER_DOMAIN' );
