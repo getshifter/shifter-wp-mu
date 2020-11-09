@@ -154,7 +154,7 @@ class Shifter_API {
 			'body'    => wp_json_encode( array( 'refreshToken' => $this->refresh_token ) ),
 		);
 		$response   = wp_remote_request( $this->refresh_url, $args );
-		$body       = $response[ 'body' ];
+		$body       = $response['body'];
 		$body_array = json_decode( $body );
 		// phpcs:disable
 		$this->access_token = $body_array->AccessToken;

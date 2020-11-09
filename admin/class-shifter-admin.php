@@ -115,7 +115,7 @@ class Shifter_Admin {
 		<script>
 		function shifter_heartbert_getajax() {
 			var xhr= new XMLHttpRequest();
-			xhr.open("GET","<?php echo esc_url(add_query_arg('action','nopriv_heartbeat',site_url('/wp-admin/admin-ajax.php')));?>");
+			xhr.open("GET","<?php echo esc_url( add_query_arg( 'action', 'nopriv_heartbeat', site_url( '/wp-admin/admin-ajax.php' ) ) ); ?>");
 			xhr.send();
 		}
 		var shifterHB = setInterval("shifter_heartbert_getajax()", 30000);
@@ -139,7 +139,7 @@ class Shifter_Admin {
 	/**
 	 * @param string $url URL strings
 	 * @return string Replaced URL from Shifter WP to Shifter CDN
-	 * 
+	 *
 	 * @since 1.1.0
 	 */
 	private function _replace_url_to_public_domain( $url ) {
