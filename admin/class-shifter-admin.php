@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -19,7 +20,8 @@
  * @subpackage Shifter/admin
  * @author     DigitalCube <hello@getshifter.io>
  */
-class Shifter_Admin {
+class Shifter_Admin
+{
 
 	/**
 	 * The ID of this plugin.
@@ -46,7 +48,8 @@ class Shifter_Admin {
 	 * @param string $plugin_name The name of this plugin.
 	 * @param string $version     The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct($plugin_name, $version)
+	{
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 	}
@@ -56,24 +59,30 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function notice_shifter_dashboard_timer() {
+	public function notice_shifter_dashboard_timer()
+	{
 		$bootup_filename = '../.bootup';
 		$hard_limit      = 180;
-		if ( file_exists( $bootup_filename ) ) {
-			$unixtime       = file_get_contents( $bootup_filename, true );
-			$shifter_remain = $hard_limit - round( ( time() - intval( $unixtime ) ) / 60 );
-			if ( $shifter_remain < 3 ) {
-				?>
-	<div class="error"><ul>
-	Notice: Shifter will power down WordPress in a few minutes. Please restart WordPress from the Shifter Dashboard.
-	</ul></div>
-				<?php
-			} elseif ( $shifter_remain < 30 ) {
-				?>
-	<div class="error"><ul>
-	Notice: Shifter will power down WordPress in <?php echo esc_html( $shifter_remain ); ?> minutes. Please restart WordPress from the Shifter Dashboard.
-	</ul></div>
-				<?php
+		if ($_ENV["SHIFTER_LOCAL"]) return;
+
+		if (file_exists($bootup_filename)) {
+			$unixtime       = file_get_contents($bootup_filename, true);
+			$shifter_remain = $hard_limit - round((time() - intval($unixtime)) / 60);
+			if ($shifter_remain < 3) { ?>
+				<div class="error">
+					<ul>
+						Notice: Shifter will power down WordPress in a few minutes. Please restart WordPress from the Shifter Dashboard.
+					</ul>
+				</div>
+			<?php
+			} elseif ($shifter_remain < 30) {
+			?>
+				<div class="error">
+					<ul>
+						Notice: Shifter will power down WordPress in <?php echo esc_html($shifter_remain); ?> minutes. Please restart WordPress from the Shifter Dashboard.
+					</ul>
+				</div>
+			<?php
 			}
 		}
 	}
@@ -86,19 +95,20 @@ class Shifter_Admin {
 	 * @param    string $old_value Old Value.
 	 * @param    string $value Value.
 	 */
-	public function option_cache_flush( $option, $old_value = '', $value = '' ) {
-		if ( ! empty( $option ) ) {
-			wp_cache_delete( $option, 'options' );
-			foreach ( array( 'alloptions', 'notoptions' ) as $options_name ) {
-				$options = wp_cache_get( $options_name, 'options' );
-				if ( ! is_array( $options ) ) {
+	public function option_cache_flush($option, $old_value = '', $value = '')
+	{
+		if (!empty($option)) {
+			wp_cache_delete($option, 'options');
+			foreach (array('alloptions', 'notoptions') as $options_name) {
+				$options = wp_cache_get($options_name, 'options');
+				if (!is_array($options)) {
 					$options = array();
 				}
-				if ( isset( $options[ $option ] ) ) {
-					unset( $options[ $option ] );
-					wp_cache_set( $options_name, $options, 'options' );
+				if (isset($options[$option])) {
+					unset($options[$option]);
+					wp_cache_set($options_name, $options, 'options');
 				}
-				unset( $options );
+				unset($options);
 			}
 		}
 	}
@@ -109,19 +119,22 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function shifter_heartbert_on_sitepreview_write_script() {
-		if ( is_user_logged_in() ) {
+	public function shifter_heartbert_on_sitepreview_write_script()
+	{
+		if (is_user_logged_in()) {
 			?>
-		<script>
-		function shifter_heartbert_getajax() {
-			var xhr= new XMLHttpRequest();
-			xhr.open("GET","<?php echo esc_url( add_query_arg( 'action', 'nopriv_heartbeat', site_url( '/wp-admin/admin-ajax.php' ) ) ); ?>");
-			xhr.send();
-		}
-		var shifterHB = setInterval("shifter_heartbert_getajax()", 30000);
-		setTimeout(function(){clearInterval(shifterHB)}, 1500000);
-		</script>
-			<?php
+			<script>
+				function shifter_heartbert_getajax() {
+					var xhr = new XMLHttpRequest();
+					xhr.open("GET", "<?php echo esc_url(add_query_arg('action', 'nopriv_heartbeat', site_url('/wp-admin/admin-ajax.php'))); ?>");
+					xhr.send();
+				}
+				var shifterHB = setInterval("shifter_heartbert_getajax()", 30000);
+				setTimeout(function() {
+					clearInterval(shifterHB)
+				}, 1500000);
+			</script>
+<?php
 		}
 	}
 
@@ -132,7 +145,8 @@ class Shifter_Admin {
 	 * @since 1.0.0
 	 * @param string $email_address Email address.
 	 */
-	public function shifter_mail_from( $email_address ) {
+	public function shifter_mail_from($email_address)
+	{
 		return 'wordpress@app.getshifter.io';
 	}
 
@@ -144,18 +158,19 @@ class Shifter_Admin {
 	 *
 	 * @since 1.1.1
 	 */
-	private function replace_url_to_public_domain( $url ) {
-		$replaced_domain = getenv( 'SHIFTER_DOMAIN' );
-		if ( ! $replaced_domain ) {
-			$replaced_domain = getenv( 'CF_DOMAIN' );
+	private function replace_url_to_public_domain($url)
+	{
+		$replaced_domain = getenv('SHIFTER_DOMAIN');
+		if (!$replaced_domain) {
+			$replaced_domain = getenv('CF_DOMAIN');
 		}
-		if ( $replaced_domain ) {
-			$parsed_url     = wp_parse_url( $url );
+		if ($replaced_domain) {
+			$parsed_url     = wp_parse_url($url);
 			$replace_target = $parsed_url['host'];
-			if ( isset( $parsed_url['port'] ) && $parsed_url['port'] ) {
+			if (isset($parsed_url['port']) && $parsed_url['port']) {
 				$replace_target .= ":{$parsed_url['port']}";
 			}
-			return preg_replace( "#{$replace_target}#i", $replaced_domain, $url );
+			return preg_replace("#{$replace_target}#i", $replaced_domain, $url);
 		}
 		return $url;
 	}
@@ -167,8 +182,9 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function replace_algolia_posts_permalink( $record ) {
-		$record['permalink'] = $this->replace_url_to_public_domain( $record['permalink'] );
+	public function replace_algolia_posts_permalink($record)
+	{
+		$record['permalink'] = $this->replace_url_to_public_domain($record['permalink']);
 		return $record;
 	}
 	/**
@@ -178,8 +194,9 @@ class Shifter_Admin {
 	 *
 	 * @since 1.1.0
 	 */
-	public function replace_algolia_terms_permalink( $record ) {
-		$record['permalink'] = $this->replace_url_to_public_domain( $record['permalink'] );
+	public function replace_algolia_terms_permalink($record)
+	{
+		$record['permalink'] = $this->replace_url_to_public_domain($record['permalink']);
 		return $record;
 	}
 
@@ -190,8 +207,9 @@ class Shifter_Admin {
 	 *
 	 * @since 1.1.0
 	 */
-	public function replace_algolia_users_posts_url( $record ) {
-		$record['posts_url'] = $this->replace_url_to_public_domain( $record['posts_url'] );
+	public function replace_algolia_users_posts_url($record)
+	{
+		$record['posts_url'] = $this->replace_url_to_public_domain($record['posts_url']);
 		return $record;
 	}
 
@@ -200,7 +218,8 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function shifter_icon() {
+	public function shifter_icon()
+	{
 		return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAB3RJTUUH4QUQCAwVRk5ANwAAAeFJREFUOMu9lEFIVEEYx38zs7LiQSja7BAaHcIoaqGDslFIyEadYusU0cki6yAaBV0FD8kSBGlLeVEwIcgkKMukDmEYLLXtJamI7dihQ0Qs+t73psM+t0V9vidI32mGmfl98/2/+Y/Cj9nMSN6IHIiJgxEHI+6ftplrW9hgxGrGFqgLWIscmk2OWqDajGS1ZS0A5RpwGeBDR7824hITB+05Xut8llLystKeKCNuRW/XVUpZ2fZlogKczYzQOdl1LiBpCYgD9aAO+vMe4Ea1Mq0KWDkO2BhA52QXr07dw3jSqj25YMTJp6Z7J/wDiQoMwC7L0ABs93lvEp/H06t0OjZ1EavUDNAHPHiXzu6PINnXHQujR3/sPR8ofKL6hpRKhMB+WaP3ATR9GgsAWo4Aj4Du9hdXX68D+yi6fuvO4v2l9bpMx5NLeeAMwNsTt0hN961J21UYflpKXtnYww6C/YMO/R+nRPHruO/xOuB32OaVdmPu5G2lrBf3fxyMuN6yU4y4uuoOcW1zMbcY5YaNvg3jIRf5BhyKAiz7TmgMqe5hpKYcftazhGUwBOY1F3M3I3c59bx3AMvjtVkWqzgN8D3ZHQ04n87S9vJ6BjgLzAGLFn4COWDP7vd3pgBaCndXnf0LIlef9HGSOIAAAAAASUVORK5CYII=';
 	}
 
@@ -209,9 +228,10 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function shifter_mu_admin() {
+	public function shifter_mu_admin()
+	{
 		echo "<div class='wrap'>";
-		echo '<h1>' . esc_html__( 'Shifter', 'shifter-mu-admin' ) . '</h1>';
+		echo '<h1>' . esc_html__('Shifter', 'shifter-mu-admin') . '</h1>';
 		echo "<div class='card'>
 			 <h2 class='title'>Generator Settings</h2>
 			 <span>Customize your static site generator settings for faster build times.</span>
@@ -235,7 +255,8 @@ class Shifter_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function shifter_mu_admin_page() {
+	public function shifter_mu_admin_page()
+	{
 		add_menu_page(
 			'Shifter',
 			'Shifter',
@@ -254,8 +275,9 @@ class Shifter_Admin {
 	 *
 	 * @since  1.0.3
 	 */
-	public function hide_update_notice() {
-		remove_action( 'admin_notices', 'update_nag', 3 );
+	public function hide_update_notice()
+	{
+		remove_action('admin_notices', 'update_nag', 3);
 	}
 
 	/**
@@ -263,7 +285,8 @@ class Shifter_Admin {
 	 *
 	 * @since  1.0.4
 	 */
-	public function remove_core_updates() {
+	public function remove_core_updates()
+	{
 		global $wp_version;
 		return (object) array(
 			'last_checked'    => time(),
@@ -271,5 +294,4 @@ class Shifter_Admin {
 			'updates'         => array(),
 		);
 	}
-
 }
