@@ -100,7 +100,7 @@ class Shifter_API {
 		$shifter_api                 = getenv( 'SHIFTER_API_URL' );
 		$this->terminate_url         = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
 		$this->generate_url          = "$shifter_api/sites/$this->site_id/artifacts";
-		$this->update_active_user_url = "$shifter_api/sites/$this->site_id/wordpress_site/update_active_user"
+		$this->update_active_user_url = "$shifter_api/sites/$this->site_id/wordpress_site/update_active_user";
 		$this->refresh_url           = "$shifter_api/login";
 		$this->shifter_dashboard_url = "https://go.getshifter.io/admin/sites/$this->site_id";
 
@@ -153,7 +153,7 @@ class Shifter_API {
 
 	public function notify_login() {
 		$user = wp_get_current_user();
-		$this->call_update_active_user( true, $user )
+		$this->call_update_active_user( true, $user );
 	}
 
 	private function call_update_active_user( $append, $username ) {
@@ -174,7 +174,7 @@ class Shifter_API {
 			'headers'  => $headers,
 			'blocking' => false,
 			'body' =>  $body,
-		)
+		);
 
 		return wp_remote_request( $this->update_active_user_url, $args );
 	}
