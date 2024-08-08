@@ -251,6 +251,8 @@ class Shifter {
 		 */
 	private function define_api_hooks() {
 		$plugin_api = new Shifter_API( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'wp_login', $plugin_api, 'notify_login' );
 	}
 
 	/**
