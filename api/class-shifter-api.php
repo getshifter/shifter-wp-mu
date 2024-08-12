@@ -151,9 +151,13 @@ class Shifter_API {
 		);
 	}
 
-	public function notify_login() {
-		$user = wp_get_current_user();
-		$this->call_update_active_user( true, $user );
+	public function notify_login( $user ) {
+		$result = $this->call_update_active_user( true, $user );
+	}
+
+	public function notify_logout( $user_id ) {
+		$user = get_user_by('ID', $user_id);
+		$result = $this->call_update_active_user( false, $user->user_login );
 	}
 
 	private function call_update_active_user( $append, $username ) {
