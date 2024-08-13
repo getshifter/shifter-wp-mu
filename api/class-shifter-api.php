@@ -57,7 +57,7 @@ class Shifter_API {
 	 * @var    string    $update_active_user_url    Update active user URL
 	 */
 	private $update_active_user_url = '';
-	
+
 			/**
 			 * Access Token
 			 *
@@ -151,15 +151,30 @@ class Shifter_API {
 		);
 	}
 
+	/**
+	 * Notify Login
+	 *
+	 * @since 1.2.0
+	 */
 	public function notify_login( $username ) {
 		$result = $this->call_update_active_user( true, $username );
 	}
 
+	/**
+	 * Notify Logout
+	 *
+	 * @since 1.2.0
+	 */
 	public function notify_logout( $user_id ) {
 		$user = get_user_by('ID', $user_id);
 		$result = $this->call_update_active_user( false, $user->user_login );
 	}
 
+	/**
+	 * Call Update Active User
+	 *
+	 * @since 1.2.0
+	 */
 	private function call_update_active_user( $append, $username ) {
 		if ( $this->access_token_is_expired() ) {
 			$this->refresh_token();
@@ -169,7 +184,7 @@ class Shifter_API {
 			'authorization' => $this->access_token,
 			'content-Type'  => 'application/json',
 		);
-		$body = json_encode( array(
+		$body = wp_json_encode( array(
 			'append' => $append,
 			'username' => $username
 		) );
