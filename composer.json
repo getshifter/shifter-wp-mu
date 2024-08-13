@@ -26,10 +26,5 @@
       "name": "Daniel Olson",
       "email": "emaildano@gmail.com"
     }
-  ],
-  "config": {
-    "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
-    }
-  }
+  ]
 }

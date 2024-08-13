@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: cimg/php:8.2
+      - image: circleci/php:7.4-cli
 
     working_directory: ~/shifter-wp-mu
 
