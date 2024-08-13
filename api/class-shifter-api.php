@@ -49,6 +49,15 @@ class Shifter_API {
 		 */
 	private $terminate_url = '';
 
+	/**
+	 * Generate URL
+	 *
+	 * @since  1.2.0
+	 * @access private
+	 * @var    string    $update_active_user_url    Update active user URL
+	 */
+	private $update_active_user_url = '';
+	
 			/**
 			 * Access Token
 			 *
@@ -91,6 +100,7 @@ class Shifter_API {
 		$shifter_api                 = getenv( 'SHIFTER_API_URL' );
 		$this->terminate_url         = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
 		$this->generate_url          = "$shifter_api/sites/$this->site_id/artifacts";
+		$this->update_active_user_url = "$shifter_api/sites/$this->site_id/wordpress_site/update_active_user";
 		$this->refresh_url           = "$shifter_api/login";
 		$this->shifter_dashboard_url = "https://go.getshifter.io/admin/sites/$this->site_id";
 
@@ -139,6 +149,38 @@ class Shifter_API {
 			'headers'  => $headers,
 			'blocking' => false,
 		);
+	}
+
+	public function notify_login( $username ) {
+		$result = $this->call_update_active_user( true, $username );
+	}
+
+	public function notify_logout( $user_id ) {
+		$user = get_user_by('ID', $user_id);
+		$result = $this->call_update_active_user( false, $user->user_login );
+	}
+
+	private function call_update_active_user( $append, $username ) {
+		if ( $this->access_token_is_expired() ) {
+			$this->refresh_token();
+		}
+
+		$headers = array(
+			'authorization' => $this->access_token,
+			'content-Type'  => 'application/json',
+		);
+		$body = json_encode( array(
+			'append' => $append,
+			'username' => $username
+		) );
+		$args = array(
+			'method'   => 'POST',
+			'headers'  => $headers,
+			'blocking' => false,
+			'body' =>  $body,
+		);
+
+		return wp_remote_request( $this->update_active_user_url, $args );
 	}
 
 	/**
