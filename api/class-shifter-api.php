@@ -151,8 +151,8 @@ class Shifter_API {
 		);
 	}
 
-	public function notify_login( $user ) {
-		$result = $this->call_update_active_user( true, $user );
+	public function notify_login( $username ) {
+		$result = $this->call_update_active_user( true, $username );
 	}
 
 	public function notify_logout( $user_id ) {
