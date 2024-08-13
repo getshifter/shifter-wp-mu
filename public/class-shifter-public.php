@@ -53,7 +53,6 @@ class Shifter_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
 	}
 
 	/**
@@ -64,7 +63,6 @@ class Shifter_Public {
 	public function enqueue_styles() {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/shifter-public.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -75,7 +73,6 @@ class Shifter_Public {
 	public function enqueue_scripts() {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-public.js', array( 'jquery' ), $this->version, false );
-
 	}
 
 	/**
@@ -102,5 +99,4 @@ class Shifter_Public {
 			);
 		}
 	}
-
 }

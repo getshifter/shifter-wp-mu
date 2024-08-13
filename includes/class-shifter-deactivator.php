@@ -32,7 +32,5 @@ class Shifter_Deactivator {
 	 * @since 1.0.0
 	 */
 	public static function deactivate() {
-
 	}
-
 }

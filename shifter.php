@@ -75,7 +75,6 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-shifter.php';
 function run_shifter() {
 	$plugin = new Shifter();
 	$plugin->run();
-
 }
 
 run_shifter();
@@ -96,7 +95,7 @@ run_shifter();
 
 add_filter(
 	'sanitize_file_name',
-	function( $filename, $filename_raw ) {
+	function ( $filename, $filename_raw ) {
 		return preg_replace( '/[\x00-\x1F]/', '', $filename );
 	},
 	10,

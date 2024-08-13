@@ -79,7 +79,6 @@ class Shifter {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->define_api_hooks();
-
 	}
 
 	/**
@@ -104,38 +103,37 @@ class Shifter {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-shifter-loader.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-shifter-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-shifter-i18n.php';
+		include_once plugin_dir_path( __DIR__ ) . 'includes/class-shifter-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-shifter-admin.php';
+		include_once plugin_dir_path( __DIR__ ) . 'admin/class-shifter-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-shifter-public.php';
+		include_once plugin_dir_path( __DIR__ ) . 'public/class-shifter-public.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the api-facing
 		 * side of the site.
 		 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'api/class-shifter-api.php';
+		include_once plugin_dir_path( __DIR__ ) . 'api/class-shifter-api.php';
 
 		/**
 			 * The class responsible for defining all actions that occur globally.
 			 */
-		include_once plugin_dir_path( dirname( __FILE__ ) ) . 'global/class-shifter-global.php';
+		include_once plugin_dir_path( __DIR__ ) . 'global/class-shifter-global.php';
 
 		$this->loader = new Shifter_Loader();
-
 	}
 
 	/**
@@ -152,7 +150,6 @@ class Shifter {
 		$plugin_i18n = new Shifter_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -225,7 +222,6 @@ class Shifter {
 
 		// Terminate Container Request.
 		$this->loader->add_action( 'wp_ajax_shifter_app_terminate', $plugin_global, 'shifter_app_terminate' );
-
 	}
 
 	/**
@@ -253,7 +249,7 @@ class Shifter {
 		$plugin_api = new Shifter_API( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_login', $plugin_api, 'notify_login', 10, 2 );
-		$this->loader->add_action( 'wp_logout', $plugin_api, 'notify_logout');
+		$this->loader->add_action( 'wp_logout', $plugin_api, 'notify_logout' );
 	}
 
 	/**
@@ -295,5 +291,4 @@ class Shifter {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

@@ -97,12 +97,12 @@ class Shifter_API {
 		$this->access_token  = getenv( 'SHIFTER_ACCESS_TOKEN' );
 		$this->refresh_token = getenv( 'SHIFTER_REFRESH_TOKEN' );
 
-		$shifter_api                 = getenv( 'SHIFTER_API_URL' );
-		$this->terminate_url         = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
-		$this->generate_url          = "$shifter_api/sites/$this->site_id/artifacts";
+		$shifter_api                  = getenv( 'SHIFTER_API_URL' );
+		$this->terminate_url          = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
+		$this->generate_url           = "$shifter_api/sites/$this->site_id/artifacts";
 		$this->update_active_user_url = "$shifter_api/sites/$this->site_id/wordpress_site/update_active_user";
-		$this->refresh_url           = "$shifter_api/login";
-		$this->shifter_dashboard_url = "https://go.getshifter.io/admin/sites/$this->site_id";
+		$this->refresh_url            = "$shifter_api/login";
+		$this->shifter_dashboard_url  = "https://go.getshifter.io/admin/sites/$this->site_id";
 
 		$bootup_unixtimestamp    = file_get_contents( ABSPATH . '/.bootup' );
 		$bootup_date             = new DateTime();
@@ -166,7 +166,7 @@ class Shifter_API {
 	 * @since 1.2.0
 	 */
 	public function notify_logout( $user_id ) {
-		$user = get_user_by('ID', $user_id);
+		$user   = get_user_by( 'ID', $user_id );
 		$result = $this->call_update_active_user( false, $user->user_login );
 	}
 
@@ -184,15 +184,17 @@ class Shifter_API {
 			'authorization' => $this->access_token,
 			'content-Type'  => 'application/json',
 		);
-		$body = wp_json_encode( array(
-			'append' => $append,
-			'username' => $username
-		) );
-		$args = array(
+		$body    = wp_json_encode(
+			array(
+				'append'   => $append,
+				'username' => $username,
+			)
+		);
+		$args    = array(
 			'method'   => 'POST',
 			'headers'  => $headers,
 			'blocking' => false,
-			'body' =>  $body,
+			'body'     => $body,
 		);
 
 		return wp_remote_request( $this->update_active_user_url, $args );
