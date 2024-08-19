@@ -95,6 +95,7 @@ run_shifter();
 
 add_filter(
 	'sanitize_file_name',
+	// phpcs:ignore
 	function ( $filename, $filename_raw ) {
 		return preg_replace( '/[\x00-\x1F]/', '', $filename );
 	},

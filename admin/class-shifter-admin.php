@@ -60,7 +60,7 @@ class Shifter_Admin {
 	public function notice_shifter_dashboard_timer() {
 		$bootup_filename = '../.bootup';
 		$hard_limit      = 180;
-		if ( $_ENV['SHIFTER_LOCAL'] ) {
+		if ( empty( getenv( 'SHIFTER_LOCAL' ) ) ) {
 			return;
 		}
 
@@ -94,6 +94,7 @@ class Shifter_Admin {
 	 * @param    string $old_value Old Value.
 	 * @param    string $value Value.
 	 */
+	// phpcs:ignore
 	public function option_cache_flush( $option, $old_value = '', $value = '' ) {
 		if ( ! empty( $option ) ) {
 			wp_cache_delete( $option, 'options' );
@@ -142,6 +143,7 @@ class Shifter_Admin {
 	 * @since 1.0.0
 	 * @param string $email_address Email address.
 	 */
+	// phpcs:ignore
 	public function shifter_mail_from( $email_address ) {
 		return 'wordpress@app.getshifter.io';
 	}

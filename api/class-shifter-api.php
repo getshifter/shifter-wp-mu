@@ -155,6 +155,7 @@ class Shifter_API {
 	 * Notify Login
 	 *
 	 * @since 1.2.0
+	 * @param string $username Username.
 	 */
 	public function notify_login( $username ) {
 		$result = $this->call_update_active_user( true, $username );
@@ -164,6 +165,7 @@ class Shifter_API {
 	 * Notify Logout
 	 *
 	 * @since 1.2.0
+	 * @param int $user_id User ID.
 	 */
 	public function notify_logout( $user_id ) {
 		$user   = get_user_by( 'ID', $user_id );
@@ -174,6 +176,8 @@ class Shifter_API {
 	 * Call Update Active User
 	 *
 	 * @since 1.2.0
+	 * @param bool   $append   Append.
+	 * @param string $username Username.
 	 */
 	private function call_update_active_user( $append, $username ) {
 		if ( $this->access_token_is_expired() ) {
