@@ -257,4 +257,14 @@ class Shifter_API {
 		}
 		return false;
 	}
+
+	/**
+	 * Get Shifter Dashboard URL
+	 *
+	 * @since 1.0.0
+	 * @return string Shifter Dashboard URL
+	 */
+	public function get_shifter_dashboard_url() {
+		return $this->shifter_dashboard_url;
+	}
 }
