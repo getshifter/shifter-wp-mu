@@ -29,7 +29,7 @@ jobs:
     working_directory: ~/shifter-wp-mu
     steps:
       - checkout
-      - run: go get -u github.com/tcnksm/ghr
+      - run: go install github.com/tcnksm/ghr@latest
       - run:
           name: tag release
           command: |
