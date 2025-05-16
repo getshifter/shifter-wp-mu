@@ -40,17 +40,17 @@ class Shifter_API {
 	 */
 	private $generate_url = '';
 
-		/**
-		 * Terminate URL
-		 *
-		 * @since  1.0.0
-		 * @access private
-		 * @var    string    $terminate_url    Terminate URL
-		 */
+	/**
+	 * Terminate URL
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $terminate_url    Terminate URL
+	 */
 	private $terminate_url = '';
 
 	/**
-	 * Generate URL
+	 * Update Active User URL
 	 *
 	 * @since  1.2.0
 	 * @access private
@@ -58,31 +58,49 @@ class Shifter_API {
 	 */
 	private $update_active_user_url = '';
 
-			/**
-			 * Access Token
-			 *
-			 * @since  1.0.0
-			 * @access private
-			 * @var    string    $access_token    Access Token
-			 */
+	/**
+	 * Refresh URL
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $refresh_url    Refresh URL
+	 */
+	private $refresh_url = '';
+
+	/**
+	 * Shifter Dashboard URL
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $shifter_dashboard_url    Shifter Dashboard URL
+	 */
+	private $shifter_dashboard_url = '';
+
+	/**
+	 * Access Token
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $access_token    Access Token
+	 */
 	private $access_token = '';
 
-			/**
-			 * Refresh Token
-			 *
-			 * @since  1.0.0
-			 * @access private
-			 * @var    string    $refresh_token    Refresh Token
-			 */
+	/**
+	 * Refresh Token
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $refresh_token    Refresh Token
+	 */
 	private $refresh_token = '';
 
-				/**
-				 * Refresh Token Date
-				 *
-				 * @since  1.0.0
-				 * @access private
-				 * @var    string    $token_update_date    Refresh Token Date
-				 */
+	/**
+	 * Refresh Token Date
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $token_update_date    Refresh Token Date
+	 */
 	private static $token_update_date;
 
 	/**
@@ -238,5 +256,15 @@ class Shifter_API {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Get Shifter Dashboard URL
+	 *
+	 * @since 1.0.0
+	 * @return string Shifter Dashboard URL
+	 */
+	public function get_shifter_dashboard_url() {
+		return $this->shifter_dashboard_url;
 	}
 }
