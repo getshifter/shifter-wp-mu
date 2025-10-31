@@ -114,6 +114,18 @@ class Shifter_Global {
 		return $api->generate_wp_app();
 	}
 
+		/**
+		 * Send Upload Single Page Request
+		 *
+		 * @since  1.0.0
+		 * @return mixed
+		 */
+	public function shifter_app_upload_single() {
+		$api = new Shifter_API();
+		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		return $api->upload_single_page( $path );
+	}
+
 	/**
 	 * Shifter Admin Bar
 	 *
@@ -151,7 +163,16 @@ class Shifter_Global {
 			'meta'   => array( 'class' => $local_class ),
 		);
 
+		$shifter_support_upload_single = array(
+			'id'     => 'shifter_support_upload_single',
+			'title'  => 'Upload Single Page',
+			'parent' => 'shifter',
+			'href'   => '#',
+			'meta'   => array( 'class' => $local_class ),
+		);
+
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
+		$wp_admin_bar->add_menu( $shifter_support_upload_single );
 		if ( ! getenv( 'SHIFTER_DISABLE_GENERATE' ) ) {
 			$wp_admin_bar->add_menu( $shifter_support_generate );
 		}
