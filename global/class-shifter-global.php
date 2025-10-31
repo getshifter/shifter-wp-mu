@@ -86,7 +86,7 @@ class Shifter_Global {
 		if ( is_user_logged_in() ) {
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-global.js', array( 'jquery' ), $this->version, false );
 			wp_register_script( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.js', array(), '7.26.11', true );
-			wp_localize_script( 'sweetalert2', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_localize_script( 'sweetalert2', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce( 'shifter_ops' ) ) );
 			wp_enqueue_script( 'sweetalert2' );
 		}
 	}
@@ -121,7 +121,8 @@ class Shifter_Global {
 		 * @return mixed
 		 */
 	public function shifter_app_upload_single() {
-		$api = new Shifter_API();
+		check_ajax_referer( 'shifter_ops', 'security' );
+		$api  = new Shifter_API();
 		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 		return $api->upload_single_page( $path );
 	}

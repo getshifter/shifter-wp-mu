@@ -33,7 +33,7 @@
     $.ajax({
       method: "POST",
       url: ajax_object.ajax_url,
-      data: Object.assign({ action: action }, extraData || {})
+      data: Object.assign({ action: action, security: ajax_object.nonce }, extraData || {})
     }).done(response => {
       console.log(response);
       console.log(ajax_object.ajax_url);
