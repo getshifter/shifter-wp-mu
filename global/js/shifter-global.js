@@ -29,11 +29,11 @@
    * practising this, we should strive to set a better example in our own work.
    */
 
-  function call_shifter_operation(action) {
+  function call_shifter_operation(action, extraData) {
     $.ajax({
       method: "POST",
       url: ajax_object.ajax_url,
-      data: { action: action }
+      data: Object.assign({ action: action }, extraData || {})
     }).done(response => {
       console.log(response);
       console.log(ajax_object.ajax_url);
@@ -83,6 +83,29 @@
     });
   }
 
+  function upload_single_page() {
+    const currentUrl = window.location.href;
+    const path = window.location.pathname;
+    swal({
+      title: "Upload Single Page?",
+      text: `Only this page will be uploaded.\n${currentUrl}`,
+      showCancelButton: true,
+      confirmButtonColor: "#bc4e9c",
+      cancelButtonColor: "#333",
+      confirmButtonText: "Upload",
+      padding: "3em"
+    }).then(result => {
+      if (result.value) {
+        call_shifter_operation("shifter_app_upload_single", { path: path });
+        swal(
+          "Upload started",
+          "Please check the Shifter dashboard",
+          "success"
+        );
+      }
+    });
+  }
+
   $(document).on("click", "#wp-admin-bar-shifter_support_generate", function() {
     generate_artifact();
   });
@@ -92,6 +115,14 @@
     "#wp-admin-bar-shifter_support_terminate",
     function() {
       terminate_app();
+    }
+  );
+
+  $(document).on(
+    "click",
+    "#wp-admin-bar-shifter_support_upload_single",
+    function() {
+      upload_single_page();
     }
   );
 })(jQuery);
