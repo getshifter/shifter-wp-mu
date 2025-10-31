@@ -153,6 +153,37 @@ class Shifter_API {
 	}
 
 	/**
+	 * Upload Single Page
+	 *
+	 * @since 1.0.0
+	 * @param string $path Target page path.
+	 */
+	public function upload_single_page( $path ) {
+		if ( $this->access_token_is_expired() ) {
+			$this->refresh_token();
+		}
+
+		$headers = array(
+			'authorization' => $this->access_token,
+			'content-Type'  => 'application/json',
+		);
+		$body    = wp_json_encode(
+			array(
+				'siteId' => $this->site_id,
+				'path'   => $path,
+			)
+		);
+		$args    = array(
+			'method'   => 'POST',
+			'headers'  => $headers,
+			'blocking' => false,
+			'body'     => $body,
+		);
+
+		return wp_remote_request( $this->generate_url, $args );
+	}
+
+	/**
 	 * Build Args
 	 *
 	 * @since 1.0.0
