@@ -41,6 +41,15 @@ class Shifter_API {
 	private $generate_url = '';
 
 	/**
+	 * Publish Single Page URL
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $publish_single_url    Publish single page URL
+	 */
+	private $publish_single_url = '';
+
+	/**
 	 * Terminate URL
 	 *
 	 * @since  1.0.0
@@ -119,6 +128,7 @@ class Shifter_API {
 		$this->terminate_url          = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
 		$this->generate_url           = "$shifter_api/sites/$this->site_id/artifacts";
 		$this->update_active_user_url = "$shifter_api/sites/$this->site_id/wordpress_site/update_active_user";
+		$this->publish_single_url     = "$shifter_api/sites/$this->site_id/wordpress_site/pages/publish";
 		$this->refresh_url            = "$shifter_api/login";
 		$this->shifter_dashboard_url  = "https://go.getshifter.io/admin/sites/$this->site_id";
 
@@ -180,7 +190,7 @@ class Shifter_API {
 			'body'     => $body,
 		);
 
-		return wp_remote_request( $this->generate_url, $args );
+		return wp_remote_request( $this->publish_single_url, $args );
 	}
 
 	/**
