@@ -41,6 +41,15 @@ class Shifter_API {
 	private $generate_url = '';
 
 	/**
+	 * Publish Single Page URL
+	 *
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $publish_single_url    Publish single page URL
+	 */
+	private $publish_single_url = '';
+
+	/**
 	 * Terminate URL
 	 *
 	 * @since  1.0.0
@@ -119,6 +128,7 @@ class Shifter_API {
 		$this->terminate_url          = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
 		$this->generate_url           = "$shifter_api/sites/$this->site_id/artifacts";
 		$this->update_active_user_url = "$shifter_api/sites/$this->site_id/wordpress_site/update_active_user";
+		$this->publish_single_url     = "$shifter_api/sites/$this->site_id/wordpress_site/pages/publish";
 		$this->refresh_url            = "$shifter_api/login";
 		$this->shifter_dashboard_url  = "https://go.getshifter.io/admin/sites/$this->site_id";
 
@@ -150,6 +160,37 @@ class Shifter_API {
 			$this->refresh_token();
 		}
 		return wp_remote_request( $this->generate_url, $this->build_args() );
+	}
+
+	/**
+	 * Upload Single Page
+	 *
+	 * @since 1.0.0
+	 * @param string $path Target page path.
+	 */
+	public function upload_single_page( $path ) {
+		if ( $this->access_token_is_expired() ) {
+			$this->refresh_token();
+		}
+
+		$headers = array(
+			'authorization' => $this->access_token,
+			'content-Type'  => 'application/json',
+		);
+		$body    = wp_json_encode(
+			array(
+				'siteId' => $this->site_id,
+				'path'   => $path,
+			)
+		);
+		$args    = array(
+			'method'   => 'POST',
+			'headers'  => $headers,
+			'blocking' => false,
+			'body'     => $body,
+		);
+
+		return wp_remote_request( $this->publish_single_url, $args );
 	}
 
 	/**

@@ -222,6 +222,9 @@ class Shifter {
 
 		// Terminate Container Request.
 		$this->loader->add_action( 'wp_ajax_shifter_app_terminate', $plugin_global, 'shifter_app_terminate' );
+
+		// Upload Single Page Request.
+		$this->loader->add_action( 'wp_ajax_shifter_app_upload_single', $plugin_global, 'shifter_app_upload_single' );
 	}
 
 	/**

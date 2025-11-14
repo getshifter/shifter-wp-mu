@@ -86,7 +86,14 @@ class Shifter_Global {
 		if ( is_user_logged_in() ) {
 			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-global.js', array( 'jquery' ), $this->version, false );
 			wp_register_script( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.js', array(), '7.26.11', true );
-			wp_localize_script( 'sweetalert2', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+			wp_localize_script(
+				'sweetalert2',
+				'ajax_object',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce'    => wp_create_nonce( 'shifter_ops' ),
+				)
+			);
 			wp_enqueue_script( 'sweetalert2' );
 		}
 	}
@@ -112,6 +119,44 @@ class Shifter_Global {
 	public function shifter_app_generate() {
 		$api = new Shifter_API();
 		return $api->generate_wp_app();
+	}
+
+		/**
+		 * Send Upload Single Page Request
+		 *
+		 * @since  1.0.0
+		 * @return mixed
+		 */
+	public function shifter_app_upload_single() {
+		check_ajax_referer( 'shifter_ops', 'security' );
+		$api      = new Shifter_API();
+		$path     = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		$response = $api->upload_single_page( $path );
+
+		if ( is_wp_error( $response ) ) {
+			wp_send_json_error(
+				array(
+					'message' => $response->get_error_message(),
+				),
+				500
+			);
+		}
+
+		$status_code = wp_remote_retrieve_response_code( $response );
+		$body        = wp_remote_retrieve_body( $response );
+		$data        = json_decode( $body, true );
+
+		if ( $status_code >= 200 && $status_code < 300 ) {
+			wp_send_json_success( $data, $status_code );
+		} else {
+			wp_send_json_error(
+				array(
+					'statusCode' => $status_code,
+					'response'   => $data ? $data : $body,
+				),
+				$status_code
+			);
+		}
 	}
 
 	/**
@@ -151,7 +196,16 @@ class Shifter_Global {
 			'meta'   => array( 'class' => $local_class ),
 		);
 
+		$shifter_support_upload_single = array(
+			'id'     => 'shifter_support_upload_single',
+			'title'  => 'Upload Single Page',
+			'parent' => 'shifter',
+			'href'   => '#',
+			'meta'   => array( 'class' => $local_class ),
+		);
+
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
+		$wp_admin_bar->add_menu( $shifter_support_upload_single );
 		if ( ! getenv( 'SHIFTER_DISABLE_GENERATE' ) ) {
 			$wp_admin_bar->add_menu( $shifter_support_generate );
 		}
