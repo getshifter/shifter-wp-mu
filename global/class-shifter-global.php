@@ -129,8 +129,8 @@ class Shifter_Global {
 		 */
 	public function shifter_app_upload_single() {
 		check_ajax_referer( 'shifter_ops', 'security' );
-		$api  = new Shifter_API();
-		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		$api      = new Shifter_API();
+		$path     = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 		$response = $api->upload_single_page( $path );
 
 		if ( is_wp_error( $response ) ) {
