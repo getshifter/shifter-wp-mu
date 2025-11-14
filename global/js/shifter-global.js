@@ -30,7 +30,7 @@
    */
 
   function call_shifter_operation(action, extraData) {
-    $.ajax({
+    return $.ajax({
       method: "POST",
       url: ajax_object.ajax_url,
       data: Object.assign({ action: action, security: ajax_object.nonce }, extraData || {})
@@ -96,12 +96,29 @@
       padding: "3em"
     }).then(result => {
       if (result.value) {
-        call_shifter_operation("shifter_app_upload_single", { path: path });
-        swal(
-          "Upload started",
-          "Please check the Shifter dashboard",
-          "success"
-        );
+        call_shifter_operation("shifter_app_upload_single", { path: path })
+          .done(resp => {
+            const data = resp && resp.data ? resp.data : resp;
+            const statusCode = data && data.statusCode !== undefined ? data.statusCode : "";
+            const bucket = data && data.bucket ? data.bucket : "";
+            const key = data && data.key ? data.key : "";
+            const invalidated = data && typeof data.invalidated !== "undefined" ? data.invalidated : "";
+            const contentType = data && data.contentType ? data.contentType : "";
+            const message = [
+              statusCode ? `statusCode: ${statusCode}` : "",
+              bucket ? `bucket: ${bucket}` : "",
+              key ? `key: ${key}` : "",
+              invalidated !== "" ? `invalidated: ${invalidated}` : "",
+              contentType ? `contentType: ${contentType}` : ""
+            ].filter(Boolean).join("\\n");
+            swal("Upload completed", message || "Done.", "success");
+          })
+          .fail(xhr => {
+            const res = xhr && xhr.responseJSON ? xhr.responseJSON : {};
+            const data = res && res.data ? res.data : {};
+            const msg = (data && (data.message || data.response)) || xhr.statusText || "Request failed";
+            swal("Upload failed", typeof msg === \"string\" ? msg : JSON.stringify(msg), "error");
+          });
       }
     });
   }

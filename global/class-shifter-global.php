@@ -131,7 +131,32 @@ class Shifter_Global {
 		check_ajax_referer( 'shifter_ops', 'security' );
 		$api  = new Shifter_API();
 		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
-		return $api->upload_single_page( $path );
+		$response = $api->upload_single_page( $path );
+
+		if ( is_wp_error( $response ) ) {
+			wp_send_json_error(
+				array(
+					'message' => $response->get_error_message(),
+				),
+				500
+			);
+		}
+
+		$status_code = wp_remote_retrieve_response_code( $response );
+		$body        = wp_remote_retrieve_body( $response );
+		$data        = json_decode( $body, true );
+
+		if ( $status_code >= 200 && $status_code < 300 ) {
+			wp_send_json_success( $data, $status_code );
+		} else {
+			wp_send_json_error(
+				array(
+					'statusCode' => $status_code,
+					'response'   => $data ? $data : $body,
+				),
+				$status_code
+			);
+		}
 	}
 
 	/**
