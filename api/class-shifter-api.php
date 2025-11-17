@@ -43,7 +43,7 @@ class Shifter_API {
 	/**
 	 * Publish Single Page URL
 	 *
-	 * @since  1.0.0
+	 * @since  1.2.0
 	 * @access private
 	 * @var    string    $publish_single_url    Publish single page URL
 	 */
@@ -165,7 +165,7 @@ class Shifter_API {
 	/**
 	 * Upload Single Page
 	 *
-	 * @since 1.0.0
+	 * @since 1.2.0
 	 * @param string $path Target page path.
 	 */
 	public function upload_single_page( $path ) {
