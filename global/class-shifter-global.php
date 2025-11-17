@@ -124,7 +124,7 @@ class Shifter_Global {
 		/**
 		 * Send Upload Single Page Request
 		 *
-		 * @since  1.2.0
+		 * @since  1.3.0
 		 * @return mixed
 		 */
 	public function shifter_app_upload_single() {
