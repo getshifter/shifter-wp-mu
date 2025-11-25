@@ -117,13 +117,13 @@
             const res = xhr && xhr.responseJSON ? xhr.responseJSON : {};
             const data = res && res.data ? res.data : {};
             const msg = (data && (data.message || data.response)) || xhr.statusText || "Request failed";
-            swal("Upload failed", typeof msg === \"string\" ? msg : JSON.stringify(msg), "error");
+            swal("Upload failed", typeof msg === "string" ? msg : JSON.stringify(msg), "error");
           });
       }
     });
   }
 
-  $(document).on("click", "#wp-admin-bar-shifter_support_generate", function() {
+  $(document).on("click", "#wp-admin-bar-shifter_support_generate", function () {
     generate_artifact();
   });
 
