@@ -93,33 +93,80 @@
       confirmButtonColor: "#bc4e9c",
       cancelButtonColor: "#333",
       confirmButtonText: "Upload",
-      padding: "3em"
-    }).then(result => {
-      if (result.value) {
-        call_shifter_operation("shifter_app_upload_single", { path: path })
-          .done(resp => {
-            const data = resp && resp.data ? resp.data : resp;
-            const statusCode = data && data.statusCode !== undefined ? data.statusCode : "";
-            const bucket = data && data.bucket ? data.bucket : "";
-            const key = data && data.key ? data.key : "";
-            const invalidated = data && typeof data.invalidated !== "undefined" ? data.invalidated : "";
-            const contentType = data && data.contentType ? data.contentType : "";
-            const message = [
-              statusCode ? `statusCode: ${statusCode}` : "",
-              bucket ? `bucket: ${bucket}` : "",
-              key ? `key: ${key}` : "",
-              invalidated !== "" ? `invalidated: ${invalidated}` : "",
-              contentType ? `contentType: ${contentType}` : ""
-            ].filter(Boolean).join("\\n");
-            swal("Upload completed", message || "Done.", "success");
-          })
-          .fail(xhr => {
-            const res = xhr && xhr.responseJSON ? xhr.responseJSON : {};
-            const data = res && res.data ? res.data : {};
-            const msg = (data && (data.message || data.response)) || xhr.statusText || "Request failed";
-            swal("Upload failed", typeof msg === "string" ? msg : JSON.stringify(msg), "error");
-          });
+      padding: "3em",
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      preConfirm: () => {
+        try {
+          const cancelBtn = (window.Swal && Swal.getCancelButton && Swal.getCancelButton()) || document.querySelector(".swal2-cancel");
+          if (cancelBtn) {
+            cancelBtn.disabled = true;
+            cancelBtn.style.display = "none";
+          }
+          // Prefer API, fallback to DOM manipulation for broader compatibility.
+          if (window.Swal && Swal.update) {
+            Swal.update({ title: "Uploading…" });
+          } else {
+            const titleEl = (window.Swal && Swal.getTitle && Swal.getTitle()) || document.querySelector(".swal2-title");
+            if (titleEl) titleEl.textContent = "Uploading…";
+          }
+          if (window.Swal && Swal.showLoading) {
+            Swal.showLoading();
+          }
+        } catch (e) {}
+        return new Promise((resolve, reject) => {
+          call_shifter_operation("shifter_app_upload_single", { path: path })
+            .done(resp => resolve(resp))
+            .fail(xhr => {
+              const res = xhr && xhr.responseJSON ? xhr.responseJSON : {};
+              const data = res && res.data ? res.data : {};
+              const msg = (data && (data.message || data.response)) || xhr.statusText || "Request failed";
+              try {
+                if (window.Swal && Swal.showValidationMessage) {
+                  Swal.showValidationMessage(typeof msg === "string" ? msg : JSON.stringify(msg));
+                }
+                // Restore original title/text with API or DOM fallback.
+                if (window.Swal && Swal.update) {
+                  Swal.update({
+                    title: "Upload Single Page?",
+                    text: `Only this page will be uploaded.\n${currentUrl}`
+                  });
+                } else {
+                  const titleEl = (window.Swal && Swal.getTitle && Swal.getTitle()) || document.querySelector(".swal2-title");
+                  if (titleEl) titleEl.textContent = "Upload Single Page?";
+                  const textEl =
+                    (window.Swal && Swal.getHtmlContainer && Swal.getHtmlContainer()) ||
+                    document.querySelector(".swal2-html-container, .swal2-content");
+                  if (textEl) textEl.textContent = `Only this page will be uploaded.\n${currentUrl}`;
+                }
+                const cancelBtn = (window.Swal && Swal.getCancelButton && Swal.getCancelButton()) || document.querySelector(".swal2-cancel");
+                if (cancelBtn) {
+                  cancelBtn.disabled = false;
+                  cancelBtn.style.display = "";
+                }
+              } catch (e) {}
+              reject(new Error(typeof msg === "string" ? msg : JSON.stringify(msg)));
+            });
+        });
       }
+    }).then(result => {
+      if (!result.value) return;
+      const resp = result.value;
+      const data = resp && resp.data ? resp.data : resp;
+      const statusCode = data && data.statusCode !== undefined ? data.statusCode : "";
+      const bucket = data && data.bucket ? data.bucket : "";
+      const key = data && data.key ? data.key : "";
+      const invalidated = data && typeof data.invalidated !== "undefined" ? data.invalidated : "";
+      const contentType = data && data.contentType ? data.contentType : "";
+      const message = [
+        statusCode ? `statusCode: ${statusCode}` : "",
+        bucket ? `bucket: ${bucket}` : "",
+        key ? `key: ${key}` : "",
+        invalidated !== "" ? `invalidated: ${invalidated}` : "",
+        contentType ? `contentType: ${contentType}` : ""
+      ].filter(Boolean).join("\\n");
+      swal("Upload completed", message || "Done.", "success");
     });
   }
 
