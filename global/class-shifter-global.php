@@ -205,9 +205,9 @@ class Shifter_Global {
 		);
 
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
-    if ( is_singular() && ! is_preview() ) {
-      $wp_admin_bar->add_menu( $shifter_support_upload_single );
-    }
+		if ( is_singular() && ! is_preview() ) {
+			$wp_admin_bar->add_menu( $shifter_support_upload_single );
+		}
 		if ( ! getenv( 'SHIFTER_DISABLE_GENERATE' ) ) {
 			$wp_admin_bar->add_menu( $shifter_support_generate );
 		}
