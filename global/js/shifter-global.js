@@ -117,42 +117,36 @@
         } catch (e) {}
         return new Promise((resolve, reject) => {
           call_shifter_operation("shifter_app_upload_single", { path: path })
-            .done(resp => resolve(resp))
+            .done(resp => {
+              // Always resolve with a structured result; handle errors after modal closes.
+              try {
+                const isOk = !!(resp && resp.success);
+                if (!isOk) {
+                  const d = resp && resp.data ? resp.data : {};
+                  const msg = (d && (d.message || d.response)) || "Request failed";
+                  resolve({ ok: false, resp: resp, msg: typeof msg === "string" ? msg : JSON.stringify(msg) });
+                  return;
+                }
+              } catch (e) {}
+              resolve({ ok: true, resp: resp });
+            })
             .fail(xhr => {
               const res = xhr && xhr.responseJSON ? xhr.responseJSON : {};
               const data = res && res.data ? res.data : {};
               const msg = (data && (data.message || data.response)) || xhr.statusText || "Request failed";
-              try {
-                if (window.Swal && Swal.showValidationMessage) {
-                  Swal.showValidationMessage(typeof msg === "string" ? msg : JSON.stringify(msg));
-                }
-                // Restore original title/text with API or DOM fallback.
-                if (window.Swal && Swal.update) {
-                  Swal.update({
-                    title: "Upload Single Page?",
-                    text: `Only this page will be uploaded.\n${currentUrl}`
-                  });
-                } else {
-                  const titleEl = (window.Swal && Swal.getTitle && Swal.getTitle()) || document.querySelector(".swal2-title");
-                  if (titleEl) titleEl.textContent = "Upload Single Page?";
-                  const textEl =
-                    (window.Swal && Swal.getHtmlContainer && Swal.getHtmlContainer()) ||
-                    document.querySelector(".swal2-html-container, .swal2-content");
-                  if (textEl) textEl.textContent = `Only this page will be uploaded.\n${currentUrl}`;
-                }
-                const cancelBtn = (window.Swal && Swal.getCancelButton && Swal.getCancelButton()) || document.querySelector(".swal2-cancel");
-                if (cancelBtn) {
-                  cancelBtn.disabled = false;
-                  cancelBtn.style.display = "";
-                }
-              } catch (e) {}
-              reject(new Error(typeof msg === "string" ? msg : JSON.stringify(msg)));
+              // Resolve with failure info; we'll show the error after modal closes.
+              resolve({ ok: false, resp: null, msg: typeof msg === "string" ? msg : JSON.stringify(msg) });
             });
         });
       }
     }).then(result => {
       if (!result.value) return;
-      const resp = result.value;
+      const out = result.value;
+      if (!out.ok) {
+        swal("Upload failed", out.msg || "Request failed", "error");
+        return;
+      }
+      const resp = out.resp;
       const data = resp && resp.data ? resp.data : resp;
       const statusCode = data && data.statusCode !== undefined ? data.statusCode : "";
       const bucket = data && data.bucket ? data.bucket : "";
