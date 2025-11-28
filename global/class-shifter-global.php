@@ -84,17 +84,22 @@ class Shifter_Global {
 
 		// Only load assets when generator is running.
 		if ( is_user_logged_in() ) {
-			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-global.js', array( 'jquery' ), $this->version, false );
+			// Load SweetAlert2 first and in the footer.
 			wp_register_script( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.js', array(), '7.26.11', true );
+			wp_enqueue_script( 'sweetalert2' );
+
+			// Load plugin script after dependencies and in the footer.
+			wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/shifter-global.js', array( 'jquery', 'sweetalert2' ), $this->version, true );
+
+			// Localize ajax params to the plugin script so it's always available when it runs.
 			wp_localize_script(
-				'sweetalert2',
+				$this->plugin_name,
 				'ajax_object',
 				array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
 					'nonce'    => wp_create_nonce( 'shifter_ops' ),
 				)
 			);
-			wp_enqueue_script( 'sweetalert2' );
 		}
 	}
 
