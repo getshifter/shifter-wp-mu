@@ -186,7 +186,7 @@ class Shifter_API {
 		$args    = array(
 			'method'   => 'POST',
 			'headers'  => $headers,
-			'blocking' => false,
+			'blocking' => true,
 			'body'     => $body,
 		);
 
