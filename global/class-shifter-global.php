@@ -174,13 +174,13 @@ class Shifter_Global {
 			exit;
 		}
 
-		$http_status = wp_remote_retrieve_response_code( $response );
-		$body        = wp_remote_retrieve_body( $response );
-		$data        = json_decode( $body, true );
-		$api_status  = is_array( $data ) && isset( $data['statusCode'] ) ? intval( $data['statusCode'] ) : null;
-		$http_ok     = ( $http_status >= 200 && $http_status < 300 );
-		$api_ok      = is_null( $api_status ) ? true : ( $api_status >= 200 && $api_status < 300 );
-		$success     = ( $http_ok && $api_ok );
+		$http_status    = wp_remote_retrieve_response_code( $response );
+		$body           = wp_remote_retrieve_body( $response );
+		$data           = json_decode( $body, true );
+		$api_status     = is_array( $data ) && isset( $data['statusCode'] ) ? intval( $data['statusCode'] ) : null;
+		$http_ok        = ( $http_status >= 200 && $http_status < 300 );
+		$api_ok         = is_null( $api_status ) ? true : ( $api_status >= 200 && $api_status < 300 );
+		$success        = ( $http_ok && $api_ok );
 		$api_status_log = is_null( $api_status ) ? 'null' : (string) $api_status;
 		$success_log    = $success ? '1' : '0';
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
