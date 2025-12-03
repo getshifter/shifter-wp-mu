@@ -137,10 +137,11 @@ class Shifter_Global {
 		$nonce_valid = check_ajax_referer( 'shifter_ops', 'security', false );
 		if ( false === $nonce_valid ) {
 			// Log minimal context for debugging (no secrets).
-			$user_id  = get_current_user_id();
+			$user_id   = get_current_user_id();
 			$logged_in = is_user_logged_in() ? '1' : '0';
-			$ref     = isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
-			$origin  = isset( $_SERVER['HTTP_ORIGIN'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_ORIGIN'] ) ) : '';
+			$ref       = isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+			$origin    = isset( $_SERVER['HTTP_ORIGIN'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_ORIGIN'] ) ) : '';
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( "[Shifter] upload_single: nonce invalid; user={$user_id} logged_in={$logged_in} referer={$ref} origin={$origin}" );
 			wp_send_json(
 				array(
@@ -152,13 +153,15 @@ class Shifter_Global {
 			);
 			exit;
 		}
-		$api      = new Shifter_API();
-		$path     = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		$api  = new Shifter_API();
+		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 		// Log request meta (path only; no sensitive data).
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		error_log( "[Shifter] upload_single: request path={$path}" );
 		$response = $api->upload_single_page( $path );
 
 		if ( is_wp_error( $response ) ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( '[Shifter] upload_single: wp_error=' . $response->get_error_message() );
 			wp_send_json(
 				array(
@@ -166,7 +169,7 @@ class Shifter_Global {
 					'statusCode'     => 500,
 					'httpStatusCode' => 500,
 				),
-			500
+				500
 			);
 			exit;
 		}
@@ -178,7 +181,10 @@ class Shifter_Global {
 		$http_ok     = ( $http_status >= 200 && $http_status < 300 );
 		$api_ok      = is_null( $api_status ) ? true : ( $api_status >= 200 && $api_status < 300 );
 		$success     = ( $http_ok && $api_ok );
-		error_log( "[Shifter] upload_single: http_status={$http_status} api_status=" . ( is_null( $api_status ) ? 'null' : $api_status ) . " success=" . ( $success ? '1' : '0' ) );
+		$api_status_log = is_null( $api_status ) ? 'null' : (string) $api_status;
+		$success_log    = $success ? '1' : '0';
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( '[Shifter] upload_single: http_status=' . $http_status . ' api_status=' . $api_status_log . ' success=' . $success_log );
 		wp_send_json(
 			array(
 				'success'        => $success,
