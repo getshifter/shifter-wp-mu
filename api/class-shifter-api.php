@@ -21,6 +21,15 @@
  */
 class Shifter_API {
 
+	/**
+	 * HTTP Timeout seconds
+	 *
+	 * @since  1.3.2
+	 * @access private
+	 * @var    int    $http_timeout    HTTP timeout seconds
+	 */
+	private $http_timeout = 120;
+
 
 	/**
 	 * Site ID
@@ -123,6 +132,10 @@ class Shifter_API {
 		$this->site_id       = getenv( 'SITE_ID' );
 		$this->access_token  = getenv( 'SHIFTER_ACCESS_TOKEN' );
 		$this->refresh_token = getenv( 'SHIFTER_REFRESH_TOKEN' );
+		$timeout_env         = getenv( 'SHIFTER_HTTP_TIMEOUT' );
+		if ( false !== $timeout_env && '' !== $timeout_env ) {
+			$this->http_timeout = max( 5, min( 120, intval( $timeout_env ) ) );
+		}
 
 		$shifter_api                  = getenv( 'SHIFTER_API_URL' );
 		$this->terminate_url          = "$shifter_api/sites/$this->site_id/wordpress_site/stop";
@@ -187,6 +200,7 @@ class Shifter_API {
 			'method'   => 'POST',
 			'headers'  => $headers,
 			'blocking' => true,
+			'timeout'  => $this->http_timeout,
 			'body'     => $body,
 		);
 
@@ -207,6 +221,7 @@ class Shifter_API {
 			'method'   => 'POST',
 			'headers'  => $headers,
 			'blocking' => false,
+			'timeout'  => $this->http_timeout,
 		);
 	}
 
