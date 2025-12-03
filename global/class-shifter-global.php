@@ -133,35 +133,67 @@ class Shifter_Global {
 		 * @return mixed
 		 */
 	public function shifter_app_upload_single() {
-		check_ajax_referer( 'shifter_ops', 'security' );
-		$api      = new Shifter_API();
-		$path     = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		// Verify nonce without dying to allow logging on failure.
+		$nonce_valid = check_ajax_referer( 'shifter_ops', 'security', false );
+		if ( false === $nonce_valid ) {
+			// Log minimal context for debugging (no secrets).
+			$user_id   = get_current_user_id();
+			$logged_in = is_user_logged_in() ? '1' : '0';
+			$ref       = isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+			$origin    = isset( $_SERVER['HTTP_ORIGIN'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_ORIGIN'] ) ) : '';
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( "[Shifter] upload_single: nonce invalid; user={$user_id} logged_in={$logged_in} referer={$ref} origin={$origin}" );
+			wp_send_json(
+				array(
+					'success'        => false,
+					'statusCode'     => 403,
+					'httpStatusCode' => 403,
+				),
+				403
+			);
+			exit;
+		}
+		$api  = new Shifter_API();
+		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		// Log request meta (path only; no sensitive data).
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( "[Shifter] upload_single: request path={$path}" );
 		$response = $api->upload_single_page( $path );
 
 		if ( is_wp_error( $response ) ) {
-			wp_send_json_error(
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( '[Shifter] upload_single: wp_error=' . $response->get_error_message() );
+			wp_send_json(
 				array(
-					'message' => $response->get_error_message(),
+					'success'        => false,
+					'statusCode'     => 500,
+					'httpStatusCode' => 500,
 				),
 				500
 			);
+			exit;
 		}
 
-		$status_code = wp_remote_retrieve_response_code( $response );
-		$body        = wp_remote_retrieve_body( $response );
-		$data        = json_decode( $body, true );
-
-		if ( $status_code >= 200 && $status_code < 300 ) {
-			wp_send_json_success( $data, $status_code );
-		} else {
-			wp_send_json_error(
-				array(
-					'statusCode' => $status_code,
-					'response'   => $data ? $data : $body,
-				),
-				$status_code
-			);
-		}
+		$http_status    = wp_remote_retrieve_response_code( $response );
+		$body           = wp_remote_retrieve_body( $response );
+		$data           = json_decode( $body, true );
+		$api_status     = is_array( $data ) && isset( $data['statusCode'] ) ? intval( $data['statusCode'] ) : null;
+		$http_ok        = ( $http_status >= 200 && $http_status < 300 );
+		$api_ok         = is_null( $api_status ) ? true : ( $api_status >= 200 && $api_status < 300 );
+		$success        = ( $http_ok && $api_ok );
+		$api_status_log = is_null( $api_status ) ? 'null' : (string) $api_status;
+		$success_log    = $success ? '1' : '0';
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		error_log( '[Shifter] upload_single: http_status=' . $http_status . ' api_status=' . $api_status_log . ' success=' . $success_log );
+		wp_send_json(
+			array(
+				'success'        => $success,
+				'statusCode'     => ! is_null( $api_status ) ? $api_status : $http_status,
+				'httpStatusCode' => $http_status,
+			),
+			$http_status ? $http_status : 500
+		);
+		exit;
 	}
 
 	/**

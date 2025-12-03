@@ -86,6 +86,13 @@
   function upload_single_page() {
     const currentUrl = window.location.href;
     const path = window.location.pathname;
+    try {
+      // console.log("[Shifter] upload_single: preparing request", {
+      //   ajaxUrl: (window.ajax_object && ajax_object.ajax_url) || "(missing)",
+      //   hasNonce: !!(window.ajax_object && ajax_object.nonce),
+      //   path: path
+      // });
+    } catch (e) {}
     swal({
       title: "Upload Single Page?",
       text: `Only this page will be uploaded.\n${currentUrl}`,
@@ -118,24 +125,41 @@
         return new Promise((resolve, reject) => {
           call_shifter_operation("shifter_app_upload_single", { path: path })
             .done(resp => {
-              // Always resolve with a structured result; handle errors after modal closes.
+              // Response is now: { success: boolean, statusCode: number, httpStatusCode: number }
               try {
-                const isOk = !!(resp && resp.success);
+                // console.log("[Shifter] upload_single: ajax done", resp);
+                const payload = resp;
+                const apiRaw = payload && payload.statusCode;
+                const httpRaw = payload && payload.httpStatusCode;
+                const apiStatus = apiRaw !== undefined && apiRaw !== null ? parseInt(apiRaw, 10) : NaN;
+                const httpStatus = httpRaw !== undefined && httpRaw !== null ? parseInt(httpRaw, 10) : NaN;
+                const apiOk = !isNaN(apiStatus) ? apiStatus >= 200 && apiStatus < 300 : true;
+                const httpOk = !isNaN(httpStatus) ? httpStatus >= 200 && httpStatus < 300 : true;
+                const isOk = !!(payload && payload.success === true) && apiOk && httpOk;
                 if (!isOk) {
-                  const d = resp && resp.data ? resp.data : {};
-                  const msg = (d && (d.message || d.response)) || "Request failed";
-                  resolve({ ok: false, resp: resp, msg: typeof msg === "string" ? msg : JSON.stringify(msg) });
+                  const parts = [];
+                  if (!isNaN(httpStatus)) parts.push(`HTTP ${httpStatus}`);
+                  if (!isNaN(apiStatus)) parts.push(`API ${apiStatus}`);
+                  const msg = parts.length ? `Server returned ${parts.join(" / ")}` : "Request failed";
+                  resolve({ ok: false, payload: payload, msg: msg });
                   return;
                 }
-              } catch (e) {}
-              resolve({ ok: true, resp: resp });
+                resolve({ ok: true, payload: payload });
+              } catch (e) {
+                // console.warn("[Shifter] upload_single: parse error", e);
+                resolve({ ok: false, payload: null, msg: "Unexpected response" });
+              }
             })
             .fail(xhr => {
+              const httpStatus = xhr.status || 500;
               const res = xhr && xhr.responseJSON ? xhr.responseJSON : {};
-              const data = res && res.data ? res.data : {};
-              const msg = (data && (data.message || data.response)) || xhr.statusText || "Request failed";
-              // Resolve with failure info; we'll show the error after modal closes.
-              resolve({ ok: false, resp: null, msg: typeof msg === "string" ? msg : JSON.stringify(msg) });
+              const apiStatus = res && typeof res === "object" && typeof res.statusCode !== "undefined" ? res.statusCode : undefined;
+              const parts = [];
+              if (httpStatus) parts.push(`HTTP ${httpStatus}`);
+              if (typeof apiStatus !== "undefined") parts.push(`API ${apiStatus}`);
+              const msg = parts.length ? `Server returned ${parts.join(" / ")}` : (xhr.statusText || "Request failed");
+              // console.warn("[Shifter] upload_single: ajax fail", { httpStatus, res, msg });
+              resolve({ ok: false, resp: null, msg: msg });
             });
         });
       }
@@ -143,24 +167,15 @@
       if (!result.value) return;
       const out = result.value;
       if (!out.ok) {
+        try {
+          // console.warn("[Shifter] upload_single: showing error modal", out);
+        } catch (e) {}
         swal("Upload failed", out.msg || "Request failed", "error");
         return;
       }
-      const resp = out.resp;
-      const data = resp && resp.data ? resp.data : resp;
-      const statusCode = data && data.statusCode !== undefined ? data.statusCode : "";
-      const bucket = data && data.bucket ? data.bucket : "";
-      const key = data && data.key ? data.key : "";
-      const invalidated = data && typeof data.invalidated !== "undefined" ? data.invalidated : "";
-      const contentType = data && data.contentType ? data.contentType : "";
-      const message = [
-        statusCode ? `statusCode: ${statusCode}` : "",
-        bucket ? `bucket: ${bucket}` : "",
-        key ? `key: ${key}` : "",
-        invalidated !== "" ? `invalidated: ${invalidated}` : "",
-        contentType ? `contentType: ${contentType}` : ""
-      ].filter(Boolean).join("\\n");
-      swal("Upload completed", message || "Done.", "success");
+      // console.log("[Shifter] upload_single: success modal");
+      const message = "Upload succeeded.";
+      swal("Upload completed", message, "success");
     });
   }
 
