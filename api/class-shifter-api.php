@@ -242,8 +242,10 @@ class Shifter_API {
 	 * @param int $user_id User ID.
 	 */
 	public function notify_logout( $user_id ) {
-		$user   = get_user_by( 'ID', $user_id );
-		$result = $this->call_update_active_user( false, $user->user_login );
+		$user = get_user_by( 'ID', $user_id );
+		if ( $user && isset( $user->user_login ) ) {
+			$result = $this->call_update_active_user( false, $user->user_login );
+		}
 	}
 
 	/**
