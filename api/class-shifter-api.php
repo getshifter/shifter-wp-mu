@@ -242,7 +242,7 @@ class Shifter_API {
 	 * @param int $user_id User ID.
 	 */
 	public function notify_logout( $user_id = 0 ) {
-		$user   = get_user_by( 'ID', $user_id );
+		$user = get_user_by( 'ID', $user_id );
 		if ( ! $user ) {
 			$user = wp_get_current_user();
 		}
