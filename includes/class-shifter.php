@@ -211,11 +211,14 @@ class Shifter {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_global, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_global, 'enqueue_scripts' );
 
+		// Shifter Admin Bar.
+		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_global, 'shifter_admin_bar' );
+
 		// Shifter Admin Bar Items.
 		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_global, 'shifter_admin_bar_items' );
 
-		// Shifter Admin Bar.
-		$this->loader->add_action( 'wp_before_admin_bar_render', $plugin_global, 'shifter_admin_bar' );
+		// Deactivate active presence immediately on logout.
+		$this->loader->add_action( 'clear_auth_cookie', $plugin_global, 'shifter_logout_deactivate' );
 
 		// Generate Artifact Request.
 		$this->loader->add_action( 'wp_ajax_shifter_app_generate', $plugin_global, 'shifter_app_generate' );
@@ -225,6 +228,12 @@ class Shifter {
 
 		// Upload Single Page Request.
 		$this->loader->add_action( 'wp_ajax_shifter_app_upload_single', $plugin_global, 'shifter_app_upload_single' );
+
+		// Get Active Users Request.
+		$this->loader->add_action( 'wp_ajax_shifter_get_active_users', $plugin_global, 'shifter_get_active_users' );
+
+		// Update presence on heartbeat.
+		$this->loader->add_filter( 'heartbeat_received', $plugin_global, 'shifter_heartbeat_presence', 10, 3 );
 	}
 
 	/**
@@ -252,7 +261,8 @@ class Shifter {
 		$plugin_api = new Shifter_API( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_login', $plugin_api, 'notify_login', 10, 2 );
-		$this->loader->add_action( 'wp_logout', $plugin_api, 'notify_logout' );
+		// Fire earlier, before current user context is torn down.
+		$this->loader->add_action( 'clear_auth_cookie', $plugin_api, 'notify_logout_current' );
 	}
 
 	/**
