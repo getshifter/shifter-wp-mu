@@ -232,7 +232,7 @@ class Shifter_API {
 	 * @param string $username Username.
 	 */
 	public function notify_login( $username ) {
-		$result = $this->call_update_active_user( true, $username );
+		$result = $this->call_update_active_user( true, $username, false );
 	}
 
 	/**
@@ -241,19 +241,38 @@ class Shifter_API {
 	 * @since 1.2.0
 	 * @param int $user_id User ID.
 	 */
-	public function notify_logout( $user_id ) {
-		$user   = get_user_by( 'ID', $user_id );
-		$result = $this->call_update_active_user( false, $user->user_login );
+	public function notify_logout( $user_id = 0 ) {
+		$user = get_user_by( 'ID', $user_id );
+		if ( ! $user ) {
+			$user = wp_get_current_user();
+		}
+		if ( $user && $user->exists() ) {
+			// Use blocking=true to ensure the update is sent before redirect/teardown.
+			$result = $this->call_update_active_user( false, $user->user_login, true );
+		}
+	}
+
+	/**
+	 * Notify Logout using current user (for clear_auth_cookie timing).
+	 *
+	 * @since 1.3.2
+	 */
+	public function notify_logout_current() {
+		$user = wp_get_current_user();
+		if ( $user && $user->exists() ) {
+			$this->call_update_active_user( false, $user->user_login, true );
+		}
 	}
 
 	/**
 	 * Call Update Active User
 	 *
 	 * @since 1.2.0
-	 * @param bool   $append   Append.
-	 * @param string $username Username.
+	 * @param bool   $append    Append.
+	 * @param string $username  Username.
+	 * @param bool   $blocking  Whether to wait for the HTTP response.
 	 */
-	private function call_update_active_user( $append, $username ) {
+	private function call_update_active_user( $append, $username, $blocking = false ) {
 		if ( $this->access_token_is_expired() ) {
 			$this->refresh_token();
 		}
@@ -271,7 +290,8 @@ class Shifter_API {
 		$args    = array(
 			'method'   => 'POST',
 			'headers'  => $headers,
-			'blocking' => false,
+			'blocking' => $blocking,
+			'timeout'  => $this->http_timeout,
 			'body'     => $body,
 		);
 

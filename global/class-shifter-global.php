@@ -20,6 +20,11 @@
  * @author     DigitalCube <hello@getshifter.io>
  */
 class Shifter_Global {
+	const ACTIVE_META_KEY                = '_shifter_last_active';
+	const ACTIVE_WINDOW_SECONDS          = 300;
+	const ACTIVE_WRITE_THROTTLE_SECONDS  = 60;
+	const ACTIVE_USERS_CACHE_KEY         = 'shifter_active_users_payload';
+	const ACTIVE_USERS_CACHE_TTL_SECONDS = 20;
 
 	/**
 	 * The ID of this plugin.
@@ -84,6 +89,8 @@ class Shifter_Global {
 
 		// Only load assets when generator is running.
 		if ( is_user_logged_in() ) {
+			wp_enqueue_script( 'heartbeat' );
+
 			// Load SweetAlert2 first and in the footer.
 			wp_register_script( 'sweetalert2', 'https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.26.11/sweetalert2.min.js', array(), '7.26.11', true );
 			wp_enqueue_script( 'sweetalert2' );
@@ -108,9 +115,21 @@ class Shifter_Global {
 		 * Send Terminate Request
 		 *
 		 * @since  1.0.0
-		 * @return string    The version number of the plugin.
+		 * @return mixed
 		 */
 	public function shifter_app_terminate() {
+		$nonce_valid = check_ajax_referer( 'shifter_ops', 'security', false );
+		if ( false === $nonce_valid ) {
+			wp_send_json(
+				array(
+					'success'    => false,
+					'statusCode' => 403,
+				),
+				403
+			);
+			exit;
+		}
+
 		$api = new Shifter_API();
 		return $api->terminate_wp_app();
 	}
@@ -119,9 +138,21 @@ class Shifter_Global {
 		 * Send Generator Request
 		 *
 		 * @since  1.0.0
-		 * @return string    The version number of the plugin.
+		 * @return mixed
 		 */
 	public function shifter_app_generate() {
+		$nonce_valid = check_ajax_referer( 'shifter_ops', 'security', false );
+		if ( false === $nonce_valid ) {
+			wp_send_json(
+				array(
+					'success'    => false,
+					'statusCode' => 403,
+				),
+				403
+			);
+			exit;
+		}
+
 		$api = new Shifter_API();
 		return $api->generate_wp_app();
 	}
@@ -197,14 +228,80 @@ class Shifter_Global {
 	}
 
 	/**
+	 * Heartbeat presence update and response payload.
+	 *
+	 * @param array  $response  Heartbeat response.
+	 * @param array  $_data      Heartbeat request payload.
+	 * @param string $_screen_id Screen ID.
+	 * @return array
+	 */
+	public function shifter_heartbeat_presence( $response, $_data, $_screen_id ) {
+		unset( $_data, $_screen_id );
+
+		if ( ! is_user_logged_in() ) {
+			return $response;
+		}
+
+		$this->touch_active_user();
+		$response['shifter_active_users'] = $this->build_active_users_payload( true );
+		return $response;
+	}
+
+	/**
+	 * Return active users payload.
+	 */
+	public function shifter_get_active_users() {
+		$nonce_valid = check_ajax_referer( 'shifter_ops', 'security', false );
+		if ( false === $nonce_valid ) {
+			wp_send_json(
+				array(
+					'success'    => false,
+					'statusCode' => 403,
+				),
+				403
+			);
+			exit;
+		}
+
+		if ( ! is_user_logged_in() ) {
+			wp_send_json(
+				array(
+					'success'    => false,
+					'statusCode' => 401,
+				),
+				401
+			);
+			exit;
+		}
+
+		$this->touch_active_user();
+		$payload = $this->build_active_users_payload( true );
+		wp_send_json(
+			array(
+				'success' => true,
+				'data'    => $payload,
+			),
+			200
+		);
+		exit;
+	}
+
+	/**
 	 * Shifter Admin Bar
 	 *
 	 * @since 1.0.0
 	 */
 	public function shifter_admin_bar_items() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$local_class = getenv( 'SHIFTER_LOCAL' ) ? 'disable_shifter_operation' : '';
 		$api         = new Shifter_API();
 		global $wp_admin_bar;
+		$active_users = $this->build_active_users_payload();
+		$count        = intval( $active_users['count'] );
+		$names        = $active_users['names_preview'];
 
 		$shifter_support_back_to_shifter_dashboard = array(
 			'id'     => 'shifter_support_back_to_shifter_dashboard',
@@ -241,7 +338,22 @@ class Shifter_Global {
 			'meta'   => array( 'class' => $local_class ),
 		);
 
+		$shifter_active_users = array(
+			'id'    => 'shifter_active_users',
+			'title' => 'Working now: ' . $count,
+			'href'  => '#',
+		);
+
+		$shifter_active_users_list = array(
+			'id'     => 'shifter_active_users_list',
+			'title'  => esc_html( $names ),
+			'parent' => 'shifter_active_users',
+			'href'   => '#',
+		);
+
 		$wp_admin_bar->add_menu( $shifter_support_back_to_shifter_dashboard );
+		$wp_admin_bar->add_menu( $shifter_active_users );
+		$wp_admin_bar->add_menu( $shifter_active_users_list );
 		if ( is_singular() && ! is_preview() ) {
 			$wp_admin_bar->add_menu( $shifter_support_upload_single );
 		}
@@ -249,6 +361,123 @@ class Shifter_Global {
 			$wp_admin_bar->add_menu( $shifter_support_generate );
 		}
 		$wp_admin_bar->add_menu( $shifter_support_terminate );
+	}
+
+	/**
+	 * Update current user's last active timestamp.
+	 */
+	private function touch_active_user() {
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return;
+		}
+
+		$now         = time();
+		$last_active = intval( get_user_meta( $user_id, self::ACTIVE_META_KEY, true ) );
+		if ( $last_active > 0 && ( $now - $last_active ) < self::ACTIVE_WRITE_THROTTLE_SECONDS ) {
+			return;
+		}
+
+		update_user_meta( $user_id, self::ACTIVE_META_KEY, $now );
+		delete_transient( self::ACTIVE_USERS_CACHE_KEY );
+	}
+
+	/**
+	 * Build active users payload from user meta.
+	 *
+	 * @param bool $force_refresh Force bypassing transient cache.
+	 * @return array
+	 */
+	private function build_active_users_payload( $force_refresh = false ) {
+		if ( ! $force_refresh ) {
+			$cached_payload = get_transient( self::ACTIVE_USERS_CACHE_KEY );
+			if ( is_array( $cached_payload ) ) {
+				return $cached_payload;
+			}
+		}
+
+		$threshold = time() - self::ACTIVE_WINDOW_SECONDS;
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+		$users = get_users(
+			array(
+				'number'       => 200,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_key'     => self::ACTIVE_META_KEY,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value'   => $threshold,
+				'meta_compare' => '>=',
+				'meta_type'    => 'NUMERIC',
+				'orderby'      => 'meta_value_num',
+				'order'        => 'DESC',
+				'fields'       => array( 'ID', 'display_name' ),
+			)
+		);
+
+		$current_user_id = get_current_user_id();
+		$items           = array();
+		$user_ids        = array();
+		foreach ( $users as $user ) {
+			$user_ids[] = intval( $user->ID );
+		}
+		if ( ! empty( $user_ids ) ) {
+			update_meta_cache( 'user', $user_ids );
+		}
+
+		foreach ( $users as $user ) {
+			$last_active = intval( get_user_meta( $user->ID, self::ACTIVE_META_KEY, true ) );
+			$items[]     = array(
+				'id'           => intval( $user->ID ),
+				'display_name' => $user->display_name,
+				'last_active'  => $last_active,
+				'is_me'        => intval( $user->ID ) === intval( $current_user_id ),
+			);
+		}
+
+		$count        = count( $items );
+		$others_count = 0;
+		foreach ( $items as $item ) {
+			if ( empty( $item['is_me'] ) ) {
+				++$others_count;
+			}
+		}
+
+		$payload = array(
+			'count'          => $count,
+			'others_count'   => $others_count,
+			'users'          => $items,
+			'names_preview'  => $this->build_names_preview( $items ),
+			'window_seconds' => self::ACTIVE_WINDOW_SECONDS,
+		);
+
+		set_transient( self::ACTIVE_USERS_CACHE_KEY, $payload, self::ACTIVE_USERS_CACHE_TTL_SECONDS );
+		return $payload;
+	}
+
+	/**
+	 * Build compact user names list for admin bar.
+	 *
+	 * @param array $items Active users payload items.
+	 * @return string
+	 */
+	private function build_names_preview( $items ) {
+		if ( empty( $items ) ) {
+			return 'No active users';
+		}
+
+		$names = array();
+		foreach ( $items as $item ) {
+			if ( count( $names ) >= 5 ) {
+				break;
+			}
+			$names[] = $item['display_name'];
+		}
+
+		$extra = count( $items ) - count( $names );
+		if ( $extra > 0 ) {
+			$names[] = '+' . $extra . ' more';
+		}
+
+		return implode( ', ', $names );
 	}
 
 	/**
@@ -273,5 +502,22 @@ class Shifter_Global {
 				'href'  => admin_url() . 'admin.php?page=shifter',
 			)
 		);
+	}
+
+	/**
+	 * Deactivate user immediately on logout.
+	 *
+	 * @since 1.3.2
+	 * @return void
+	 */
+	public function shifter_logout_deactivate() {
+		$user_id = get_current_user_id();
+		if ( ! $user_id ) {
+			return;
+		}
+		// Push last active outside of active window so it drops from the list immediately.
+		$inactive_timestamp = time() - self::ACTIVE_WINDOW_SECONDS - 1;
+		update_user_meta( $user_id, self::ACTIVE_META_KEY, $inactive_timestamp );
+		delete_transient( self::ACTIVE_USERS_CACHE_KEY );
 	}
 }
