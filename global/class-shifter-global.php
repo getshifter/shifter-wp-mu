@@ -130,6 +130,7 @@ class Shifter_Global {
 			exit;
 		}
 
+		$this->reset_all_active_users_presence();
 		$api = new Shifter_API();
 		return $api->terminate_wp_app();
 	}
@@ -153,6 +154,7 @@ class Shifter_Global {
 			exit;
 		}
 
+		$this->reset_all_active_users_presence();
 		$api = new Shifter_API();
 		return $api->generate_wp_app();
 	}
@@ -379,6 +381,36 @@ class Shifter_Global {
 		}
 
 		update_user_meta( $user_id, self::ACTIVE_META_KEY, $now );
+		delete_transient( self::ACTIVE_USERS_CACHE_KEY );
+	}
+
+	/**
+	 * Reset all currently active users to inactive state.
+	 *
+	 * @return void
+	 */
+	private function reset_all_active_users_presence() {
+		$threshold          = time() - self::ACTIVE_WINDOW_SECONDS;
+		$inactive_timestamp = $threshold - 1;
+
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+		$active_users = get_users(
+			array(
+				'number'       => 500,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_key'     => self::ACTIVE_META_KEY,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value'   => $threshold,
+				'meta_compare' => '>=',
+				'meta_type'    => 'NUMERIC',
+				'fields'       => array( 'ID' ),
+			)
+		);
+
+		foreach ( $active_users as $active_user ) {
+			update_user_meta( $active_user->ID, self::ACTIVE_META_KEY, $inactive_timestamp );
+		}
+
 		delete_transient( self::ACTIVE_USERS_CACHE_KEY );
 	}
 
