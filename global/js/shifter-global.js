@@ -136,7 +136,7 @@
 
   function upload_single_page() {
     const currentUrl = window.location.href;
-    const path = window.location.pathname;
+    const path = normalize_publish_path(window.location.pathname);
     swal({
       title: "Upload Single Page?",
       text: `Only this page will be uploaded.\n${currentUrl}`,
@@ -227,6 +227,25 @@
       }
       swal("Upload completed", "Upload succeeded.", "success");
     });
+  }
+
+  function normalize_publish_path(rawPath) {
+    let path = typeof rawPath === "string" ? rawPath : "/";
+
+    if (!path) {
+      return "/";
+    }
+
+    try {
+      path = decodeURI(path);
+    } catch (e) {}
+
+    path = path.replace(/\/{2,}/g, "/");
+    if (!path.startsWith("/")) {
+      path = `/${path}`;
+    }
+
+    return path;
   }
 
   function setup_presence_refresh() {

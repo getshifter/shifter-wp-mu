@@ -186,8 +186,9 @@ class Shifter_Global {
 			);
 			exit;
 		}
-		$api  = new Shifter_API();
-		$path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		$api      = new Shifter_API();
+		$raw_path = isset( $_POST['path'] ) ? wp_unslash( $_POST['path'] ) : '';
+		$path     = $this->normalize_upload_single_path( $raw_path );
 		// Log request meta (path only; no sensitive data).
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		error_log( "[Shifter] upload_single: request path={$path}" );
@@ -227,6 +228,45 @@ class Shifter_Global {
 			$http_status ? $http_status : 500
 		);
 		exit;
+	}
+
+	/**
+	 * Normalize upload-single path for Shifter API.
+	 *
+	 * Input may be a full URL or pathname and may include percent-encoded UTF-8.
+	 * Output is always a decoded UTF-8 path beginning with '/'.
+	 *
+	 * @param mixed $raw_path Raw path received from request.
+	 * @return string
+	 */
+	private function normalize_upload_single_path( $raw_path ) {
+		if ( ! is_string( $raw_path ) ) {
+			return '/';
+		}
+
+		$path = trim( $raw_path );
+		if ( '' === $path ) {
+			return '/';
+		}
+
+		$parsed = wp_parse_url( $path );
+		if ( is_array( $parsed ) && isset( $parsed['path'] ) && is_string( $parsed['path'] ) ) {
+			$path = $parsed['path'];
+		}
+
+		$path = wp_kses_no_null( $path );
+		$path = preg_replace( '/[\x00-\x1F\x7F]/u', '', $path );
+		if ( ! is_string( $path ) || '' === $path ) {
+			return '/';
+		}
+
+		$path = '/' . ltrim( $path, '/' );
+		$path = preg_replace( '#/+#', '/', $path );
+		if ( ! is_string( $path ) || '' === $path ) {
+			return '/';
+		}
+
+		return $path;
 	}
 
 	/**
