@@ -187,8 +187,11 @@ class Shifter_Global {
 			exit;
 		}
 		$api      = new Shifter_API();
-		$raw_path = isset( $_POST['path'] ) ? wp_unslash( $_POST['path'] ) : '';
-		$path     = $this->normalize_upload_single_path( $raw_path );
+		$raw_path = filter_input( INPUT_POST, 'path', FILTER_UNSAFE_RAW, FILTER_NULL_ON_FAILURE );
+		if ( ! is_string( $raw_path ) ) {
+			$raw_path = '';
+		}
+		$path = $this->normalize_upload_single_path( $raw_path );
 		// Log request meta (path only; no sensitive data).
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 		error_log( "[Shifter] upload_single: request path={$path}" );
