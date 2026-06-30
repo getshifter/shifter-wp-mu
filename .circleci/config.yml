@@ -1,5 +1,5 @@
 ---
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -9,6 +9,11 @@ jobs:
 
     steps:
       - checkout
+      - run:
+          name: pin patched Composer
+          command: |
+            composer self-update 2.9.6
+            composer --version
       - restore_cache:
           keys:
             - vendor-cache-{{ checksum "composer.lock" }}
